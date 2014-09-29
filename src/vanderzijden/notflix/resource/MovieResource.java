@@ -18,14 +18,14 @@ public class MovieResource extends BaseResource {
 
 	@GET
 	@Path(C.path.IMDB_TT)
-	@Produces(MediaType.APPLICATION_XML) 
+	@Produces(MediaType.APPLICATION_JSON) 
 	public Movie getMovie(
 			@PathParam(C.parameter.IMDB_TT) String imdb_tt) {
 		return getModel().getMovie(imdb_tt);
 	}
 	
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces({MediaType.APPLICATION_XML})
 	public List<Movie> searchMovies(
 			@DefaultValue("") @QueryParam(C.parameter.Q) String q) {
 		return getModel().searchMovies(q);

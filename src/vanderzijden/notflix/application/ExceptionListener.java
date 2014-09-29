@@ -13,6 +13,8 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
  * 
  * Code modified from: http://stackoverflow.com/a/22336601/2947592
  * 
+ * Side-effect: also prints stacktraces of regular exceptions like a 404.
+ * 
  * @author Wim van der Zijden
  *
  */

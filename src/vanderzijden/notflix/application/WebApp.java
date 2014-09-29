@@ -11,6 +11,7 @@ public class WebApp extends ResourceConfig {
 		System.out.println("Web App started");
 		packages("vanderzijden.notflix.resource");
 		register(ExceptionListener.class);
+		//register(Jackson2Feature.class);
 	}
 
 }

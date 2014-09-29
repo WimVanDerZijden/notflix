@@ -8,8 +8,7 @@ import vanderzijden.notflix.model.Model;
 
 public abstract class BaseResource {
 
-	@Context
-	ServletContext ctx;
+	@Context ServletContext ctx;
 	
 	protected Model getModel() {
 		Model model = (Model) ctx.getAttribute(C.parameter.MODEL);
