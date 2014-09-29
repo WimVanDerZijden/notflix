@@ -12,7 +12,7 @@ public abstract class BaseResource {
 	ServletContext ctx;
 	
 	protected Model getModel() {
-		Model model = (Model) ctx.getAttribute(C.MODEL);
+		Model model = (Model) ctx.getAttribute(C.parameter.MODEL);
 		if (model == null) {
 			model = new Model();
 			model.loadTestData();

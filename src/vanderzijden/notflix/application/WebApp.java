@@ -8,8 +8,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class WebApp extends ResourceConfig {
 
 	public WebApp() {
-		System.out.println("test");
+		System.out.println("Web App started");
 		packages("vanderzijden.notflix.resource");
+		register(ExceptionListener.class);
 	}
 
 }
