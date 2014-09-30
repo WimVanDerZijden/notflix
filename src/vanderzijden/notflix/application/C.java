@@ -17,11 +17,5 @@ public class C {
 		public static final String PASSWORD = "password";
 		public static final String Q = "q";
 	}
-	
-	public static class path {
-		public static final String IMDB_TT = "{imdb_tt: tt\\d+}";
-		public static final String MOVIES = "movies";
-		public static final String SESSIONS = "sessions";
-		public static final String LOGIN = "login";
-	}
+
 }

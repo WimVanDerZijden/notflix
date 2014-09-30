@@ -1,5 +1,9 @@
 package vanderzijden.notflix.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -12,11 +16,20 @@ public class Movie {
 	private int length;
 	private String director;
 	private String description;
+	
+	private final Map<String,Rating> ratings = new HashMap<>();
 
+	public Rating createRating(User user, int halfStars) {
+		if (ratings.containsKey(user.username))
+			throw new WebApplicationException(400);
+		Rating rating = new Rating(user, halfStars);
+		ratings.put(user.username, rating);
+		return rating;
+	}
+	
 	public Movie() {}
 
 	public Movie(int id, String imdb_tt, String title, long released, int length, String director, String description) {
-		super();
 		this.id = id;
 		this.imdb_tt = imdb_tt;
 		this.title = title;

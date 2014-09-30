@@ -7,19 +7,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.WebApplicationException;
+
 public class Model {
 	
-	private Map<String, Movie> movies = new HashMap<>();
-	private Map<String, User> users = new HashMap<>();
-	private Map<String, Session> sessions = new HashMap<>();
+	private final Map<String, Movie> movies = new HashMap<>();
+	private final Map<String, User> users = new HashMap<>();
+	private final Map<String, Session> sessions = new HashMap<>();
 	 
 	private int moviesNextId = 1;
 	
 	private static final SecureRandom random = new SecureRandom();
 
 	// *** GET ***
+	
+	/**
+	 * Get movie by imdb tt number.
+	 * Throws a 404 Not found if not found.
+	 * 
+	 * @param imdb_tt
+	 * @return
+	 */
 	public Movie getMovie(String imdb_tt) {
-		return movies.get(imdb_tt);
+		Movie movie = movies.get(imdb_tt);
+		if (movie == null)
+			throw new WebApplicationException(404);
+		return movie;
+	}
+	
+	/**
+	 * Get the session by token.
+	 * Throws a 401 Unauthorized if no session for this token
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public Session getSession(String token) {
+		Session session = sessions.get(token);
+		if (session == null)
+			throw new WebApplicationException(401);
+		return session;
 	}
 	/**
 	 * Search for q in titles and directors.
@@ -48,7 +75,7 @@ public class Model {
 	public Session createSession(String username, String password) {
 		User user = users.get(username);
 		if (user == null || !user.checkPassword(password))
-			return null;
+			throw new WebApplicationException(401);
 		String token;
 		do {
 			token = new BigInteger(130, random).toString(32);
@@ -68,6 +95,7 @@ public class Model {
 	}
 	
 	public void loadTestData() {
+		System.out.println("Loading test data..");
 		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashômon", -568598400, 88, "Akira Kurosawa",
 				"A heinous crime and its aftermath are recalled from differing points of view."));
 

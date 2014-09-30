@@ -1,25 +1,24 @@
 package vanderzijden.notflix.resource;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import vanderzijden.notflix.application.C;
 import vanderzijden.notflix.model.Session;
 
-@Path(C.path.SESSIONS)
+@Path("sessions")
 public class SessionResource extends BaseResource {
 
 	@POST
-	@Path(C.path.LOGIN)
-	@Produces(MediaType.APPLICATION_XML)
+	@Path("login")	//	sessions/login
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Session createSession(
-			@FormParam(C.parameter.USERNAME) String username,
-			@FormParam(C.parameter.PASSWORD) String password) {
-		Session session = getModel().createSession(username, password);
-		return session;
+			@QueryParam(C.parameter.USERNAME) String username,
+			@QueryParam(C.parameter.PASSWORD) String password) {
+		return getModel().createSession(username, password);
 	}
 
 }

@@ -15,7 +15,6 @@ public class User {
 	public User() {	}
 
 	public User(String username, String firstName, String namePrepositions, String lastName, String password) {
-		super();
 		this.username = username;
 		this.firstName = firstName;
 		this.namePrepositions = namePrepositions;
