@@ -96,7 +96,7 @@ public class Model {
 	
 	public void loadTestData() {
 		System.out.println("Loading test data..");
-		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashômon", -568598400, 88, "Akira Kurosawa",
+		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashï¿½mon", -568598400, 88, "Akira Kurosawa",
 				"A heinous crime and its aftermath are recalled from differing points of view."));
 
 		addMovie(new Movie(moviesNextId++, "tt0071853", "Monty Python and the Holy Grail", 217468800, 91, "Terry Gilliam & Terry Jones",
@@ -105,6 +105,8 @@ public class Model {
 		//		""));
 		addUser(new User("wim", "Wim","van der", "Zijden","wim"));
 		addUser(new User("pim", "Pim",null, "Teunissen","pim"));
+		
+		sessions.put("abc", new Session(users.get("wim"), "abc"));
 		
 	}
 
