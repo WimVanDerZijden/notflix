@@ -6,7 +6,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import vanderzijden.notflix.application.C;
 import vanderzijden.notflix.model.Session;
 
 @Path("sessions")
@@ -16,8 +15,8 @@ public class SessionResource extends BaseResource {
 	@Path("login")	//	sessions/login
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Session createSession(
-			@QueryParam(C.parameter.USERNAME) String username,
-			@QueryParam(C.parameter.PASSWORD) String password) {
+			@QueryParam("username") String username,
+			@QueryParam("password") String password) {
 		return getModel().createSession(username, password);
 	}
 

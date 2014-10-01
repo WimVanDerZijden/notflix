@@ -1,14 +1,19 @@
 package vanderzijden.notflix.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class User {
 
-	public String username;
-	public String firstName;
-	public String namePrepositions;
-	public String lastName;
+	@XmlElement
+	private String username;
+	@XmlElement
+	private String firstName;
+	@XmlElement
+	private String namePrepositions;
+	@XmlElement
+	private String lastName;
 
 	private String password;
 
@@ -25,4 +30,9 @@ public class User {
 	public boolean checkPassword(String password) {
 		return this.password.equals(password);
 	}
+
+	public String getUsername() {
+		return username;
+	}
+
 }

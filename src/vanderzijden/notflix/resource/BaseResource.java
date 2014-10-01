@@ -4,11 +4,20 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import vanderzijden.notflix.application.C;
 import vanderzijden.notflix.model.Model;
 import vanderzijden.notflix.model.Session;
 import vanderzijden.notflix.model.User;
 
+/**
+ * Base Resource to take care of default stuff 
+ * that most resources need to do.
+ * 
+ * - Get model from context
+ * - Validating token
+ * 
+ * @author Wim van der Zijden
+ *
+ */
 public abstract class BaseResource {
 
 	@Context
@@ -19,16 +28,28 @@ public abstract class BaseResource {
 	
 	private Session session;
 	
+	/**
+	 * Get Model from context.
+	 * Load if necessary.
+	 * 
+	 * @return
+	 */
 	protected Model getModel() {
-		Model model = (Model) ctx.getAttribute(C.parameter.MODEL);
+		Model model = (Model) ctx.getAttribute("model");
 		if (model == null) {
 			model = new Model();
 			model.loadTestData();
-			ctx.setAttribute(C.parameter.MODEL, model);
+			ctx.setAttribute("model", model);
 		}
 		return model;
 	}
 	
+	/**
+	 * Get the session.
+	 * Throws a 401 Unauthorized if no session
+	 * 
+	 * @return
+	 */
 	protected Session getSession() {
 		if (session == null) {
 			session = getModel().getSession(token);

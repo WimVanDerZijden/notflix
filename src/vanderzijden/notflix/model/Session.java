@@ -1,5 +1,6 @@
 package vanderzijden.notflix.model;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -7,7 +8,8 @@ public class Session {
 	
 	private User user;
 	
-	public String token;
+	@XmlElement
+	private String token;
 	
 	public Session() {}
 

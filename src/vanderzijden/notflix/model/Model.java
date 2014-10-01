@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.SimpleFormatter;
 
 import javax.ws.rs.WebApplicationException;
+
+import vanderzijden.notflix.application.Log;
 
 public class Model {
 	
@@ -30,8 +33,11 @@ public class Model {
 	 */
 	public Movie getMovie(String imdb_tt) {
 		Movie movie = movies.get(imdb_tt);
-		if (movie == null)
+		if (movie == null) {
+			Log.info(this, "Movie not found: " + imdb_tt);
 			throw new WebApplicationException(404);
+		}
+		SimpleFormatter f;
 		return movie;
 	}
 	
@@ -44,8 +50,10 @@ public class Model {
 	 */
 	public Session getSession(String token) {
 		Session session = sessions.get(token);
-		if (session == null)
+		if (session == null) {
+			Log.info(this, "No session");
 			throw new WebApplicationException(401);
+		}
 		return session;
 	}
 	/**
@@ -91,7 +99,7 @@ public class Model {
 	}
 	
 	public void addUser(User user) {
-		users.put(user.username, user);
+		users.put(user.getUsername(), user);
 	}
 	
 	public void loadTestData() {

@@ -4,26 +4,89 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import vanderzijden.notflix.application.Log;
 
 @XmlRootElement
 public class Movie {
 
+	/** A currently useless field, only here because it's in the assignment... */
 	private int id;
+	@XmlElement
 	private String imdb_tt;
+	@XmlElement
 	private String title;
+	@XmlElement
 	private long released;
+	@XmlElement
 	private int length;
+	@XmlElement
 	private String director;
+	@XmlElement
 	private String description;
 	
 	private final Map<String,Rating> ratings = new HashMap<>();
 
+	/**
+	 * Get rating for this user.
+	 * 
+	 * Throws a "404 Not Found" if no rating was found.
+	 * 
+	 * @param user
+	 * @return
+	 */
+	
+	public Rating getRating(User user) {
+		Rating rating = ratings.get(user.getUsername());
+		if (rating == null) {
+			Log.info(this, "Rating not found for user=" + user.getUsername() + ", imdb_tt=" + imdb_tt);
+			throw new WebApplicationException(404);
+		}
+		return rating;
+	}
+	
+	/**
+	 * Create new rating for this user.
+	 * 
+	 * Throws a "400 Bad Request" if a rating already exists
+	 * 
+	 * @param user
+	 * @param halfStars
+	 * @return
+	 */
 	public Rating createRating(User user, int halfStars) {
-		if (ratings.containsKey(user.username))
+		if (ratings.containsKey(user.getUsername())) {
+			Log.info(this, "Rating already exists user=" + user.getUsername() + ", imdb_tt=" + imdb_tt);
 			throw new WebApplicationException(400);
+		}
 		Rating rating = new Rating(user, halfStars);
-		ratings.put(user.username, rating);
+		ratings.put(user.getUsername(), rating);
+		return rating;
+	}
+	
+	/**
+	 * Update the rating for this user.
+	 * 
+	 * Throws a "404 Not found" if no rating was found.
+	 * 
+	 * @param user
+	 * @param halfStars
+	 * @return
+	 */
+	public Rating updateRating(User user, int halfStars) {
+		Rating rating = getRating(user);
+		rating.setHalfStars(halfStars);
+		return rating;
+	}
+	
+	public Rating deleteRating(User user) {
+		Rating rating = ratings.remove(user.getUsername());
+		if (rating == null) {
+			Log.info(this, "Could not delete rating because it doesn't exist for user=" + user.getUsername() + ", movie=" + imdb_tt);
+			throw new WebApplicationException(404);
+		}
 		return rating;
 	}
 	
@@ -38,57 +101,17 @@ public class Movie {
 		this.director = director;
 		this.description = description;
 	}
-	
-	protected int getId() {
-		return id;
-	}
 
 	public String getImdb_tt() {
 		return imdb_tt;
-	}
-
-	public void setImdb_tt(String imdb_tt) {
-		this.imdb_tt = imdb_tt;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public long getReleased() {
-		return released;
-	}
-
-	public void setReleased(long released) {
-		this.released = released;
-	}
-
-	public int getLength() {
-		return length;
-	}
-
-	public void setLength(int length) {
-		this.length = length;
-	}
-
 	public String getDirector() {
 		return director;
-	}
-
-	public void setDirector(String director) {
-		this.director = director;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 }
