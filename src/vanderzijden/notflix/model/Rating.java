@@ -33,6 +33,10 @@ public class Rating {
 		this.halfStars = halfStars;
 	}
 	
+	public int getHalfStars() {
+		return halfStars;
+	}
+
 	protected User getUser() {
 		return user;
 	}

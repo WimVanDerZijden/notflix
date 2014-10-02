@@ -29,6 +29,21 @@ public class Movie {
 	
 	private final Map<String,Rating> ratings = new HashMap<>();
 
+	@XmlElement
+	public double getAvgRating() {
+		double sum = 0;
+		for (String username : ratings.keySet()) {
+			sum += ratings.get(username).getHalfStars();
+		}
+		return sum / ratings.size();
+	}
+	
+	@XmlElement
+	public int votes()
+	{
+		return ratings.size();
+	}
+	
 	/**
 	 * Get rating for this user.
 	 * 
