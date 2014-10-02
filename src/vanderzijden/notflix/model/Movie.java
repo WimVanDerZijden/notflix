@@ -37,7 +37,7 @@ public class Movie {
 	 * @param user
 	 * @return
 	 */
-	
+
 	public Rating getRating(User user) {
 		Rating rating = ratings.get(user.getUsername());
 		if (rating == null) {
@@ -109,7 +109,7 @@ public class Movie {
 	public String getTitle() {
 		return title;
 	}
-
+	
 	public String getDirector() {
 		return director;
 	}

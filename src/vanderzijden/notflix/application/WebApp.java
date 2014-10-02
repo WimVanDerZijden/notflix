@@ -12,10 +12,11 @@ public class WebApp extends ResourceConfig {
 		packages("vanderzijden.notflix.resource");
 		
 		// For custom Exception Listener for debugging uncomment next line
-		// register(ExceptionListener.class);
+		register(ExceptionListener.class);
 		
 		// Make sure all classes are loaded
-		this.getClasses();
+		//this.getClasses();
+
 	}
 
 }

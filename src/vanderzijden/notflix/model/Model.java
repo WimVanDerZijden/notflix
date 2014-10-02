@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.SimpleFormatter;
 
 import javax.ws.rs.WebApplicationException;
 
@@ -24,6 +23,23 @@ public class Model {
 
 	// *** GET ***
 	
+	public List<User> getUsers() {
+		List<User> result = new ArrayList<>();
+		for (String username : users.keySet()) {
+			result.add(users.get(username));
+		}
+		return result;
+	}
+	
+	public User getUser(String username) {
+		User user = users.get(username);
+		if (user == null) {
+			Log.info(this, "User not found: " + username);
+			throw new WebApplicationException(404);
+		}
+		return user;
+	}
+	
 	/**
 	 * Get movie by imdb tt number.
 	 * Throws a 404 Not found if not found.
@@ -37,7 +53,6 @@ public class Model {
 			Log.info(this, "Movie not found: " + imdb_tt);
 			throw new WebApplicationException(404);
 		}
-		SimpleFormatter f;
 		return movie;
 	}
 	
@@ -82,8 +97,10 @@ public class Model {
 	// *** CREATE ***
 	public Session createSession(String username, String password) {
 		User user = users.get(username);
-		if (user == null || !user.checkPassword(password))
+		if (user == null || !user.checkPassword(password)) {
+			Log.info(this, "Invalid username/password");
 			throw new WebApplicationException(401);
+		}
 		String token;
 		do {
 			token = new BigInteger(130, random).toString(32);
@@ -93,6 +110,18 @@ public class Model {
 		return session;
 	}
 	
+	public User createUser(String username, String firstName, String namePrepositins, String lastName, String password)
+	{
+		if (users.containsKey(username)) {
+			Log.info(this, "Could not create duplicate user");
+			throw new WebApplicationException(400);
+		}
+		User user = new User(username, firstName, namePrepositins, lastName, password);
+		addUser(user);
+		return user;
+	}
+	
+
 	// *** OTHER ***
 	public void addMovie(Movie movie) {
 		movies.put(movie.getImdb_tt(), movie);
@@ -104,7 +133,7 @@ public class Model {
 	
 	public void loadTestData() {
 		System.out.println("Loading test data..");
-		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashï¿½mon", -568598400, 88, "Akira Kurosawa",
+		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashômon", -568598400, 88, "Akira Kurosawa",
 				"A heinous crime and its aftermath are recalled from differing points of view."));
 
 		addMovie(new Movie(moviesNextId++, "tt0071853", "Monty Python and the Holy Grail", 217468800, 91, "Terry Gilliam & Terry Jones",

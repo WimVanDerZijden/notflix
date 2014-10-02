@@ -18,7 +18,7 @@ import vanderzijden.notflix.model.Movie;
 import vanderzijden.notflix.model.Rating;
 import vanderzijden.notflix.model.User;
 
-@Path("ratings")
+@Path("rating")
 public class RatingResource extends BaseResource {
 
 	@Path("{imdb_tt: tt\\d+}")
@@ -26,7 +26,8 @@ public class RatingResource extends BaseResource {
 	@POST
 	public Response createRating(
 			@PathParam("imdb_tt") String imdb_tt,
-			@QueryParam("halfStars") int halfStars) {
+			@QueryParam("halfStars") int halfStars)
+	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
 		Rating rating = movie.createRating(user, halfStars);
@@ -40,7 +41,8 @@ public class RatingResource extends BaseResource {
 	@PUT
 	public Rating updateRating(
 			@PathParam("imdb_tt") String imdb_tt,
-			@QueryParam("halfStars") int halfStars) {
+			@QueryParam("halfStars") int halfStars)
+	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
 		return movie.updateRating(user, halfStars);
@@ -50,7 +52,8 @@ public class RatingResource extends BaseResource {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
 	@GET
 	public Rating getRating(
-			@PathParam("imdb_tt") String imdb_tt) {
+			@PathParam("imdb_tt") String imdb_tt)
+	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
 		return movie.getRating(user);
@@ -60,10 +63,10 @@ public class RatingResource extends BaseResource {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
 	@DELETE
 	public Rating deleteRating(
-			@PathParam("imdb_tt") String imdb_tt) {
+			@PathParam("imdb_tt") String imdb_tt)
+	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
 		return movie.deleteRating(user);
-		
 	}
 }

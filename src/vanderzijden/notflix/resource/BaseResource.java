@@ -77,6 +77,9 @@ public abstract class BaseResource {
 	 */
 	
 	protected User getUserOpt() {
+		if (token != null) {
+			return getSession().getUser();
+		}
 		return null;
 	}
 }
