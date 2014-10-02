@@ -66,5 +66,17 @@ public abstract class BaseResource {
 	protected User getUser() {
 		return getSession().getUser();
 	}
-
+	
+	/**
+	 * Get the user, but only if a token was provided.
+	 * 
+	 * Returns null if no token was provided.
+	 * Throws a 401 Unauthorized if a false token was provided
+	 * 
+	 * @return
+	 */
+	
+	protected User getUserOpt() {
+		return null;
+	}
 }
