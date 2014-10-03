@@ -13,7 +13,6 @@ public class WebApp extends ResourceConfig {
 		
 		// For custom Exception Listener for debugging uncomment next line
 		register(ExceptionListener.class);
-		register(AppContextListener.class);
 		// Make sure all classes are loaded
 		//this.getClasses();
 

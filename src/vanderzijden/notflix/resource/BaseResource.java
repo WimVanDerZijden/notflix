@@ -1,5 +1,7 @@
 package vanderzijden.notflix.resource;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -35,13 +37,7 @@ public abstract class BaseResource {
 	 * @return
 	 */
 	protected Model getModel() {
-		Model model = (Model) ctx.getAttribute("model");
-		if (model == null) {
-			model = new Model();
-			model.loadTestData();
-			ctx.setAttribute("model", model);
-		}
-		return model;
+		return (Model) ctx.getAttribute("model");
 	}
 	
 	/**

@@ -58,7 +58,9 @@ public class AppContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent event) {
 		ServletContext ctx = event.getServletContext();
 		Gson gson = new Gson();
-		String json = gson.toJson(ctx.getAttribute("model"));
+		Model model = (Model) ctx.getAttribute("model");
+		model.clearSessions();
+		String json = gson.toJson(model);
 		// Just for debugging. Remove for production release because it contains passwords as well.
 		System.out.println("AppContextListener.contextDestroyed: Saving model as json: " + json);
 		try {

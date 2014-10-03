@@ -131,6 +131,10 @@ public class Model {
 		users.put(user.getUsername(), user);
 	}
 	
+	public void clearSessions() {
+		sessions.clear();
+	}
+	
 	public void loadTestData() {
 		System.out.println("Loading test data..");
 		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashômon", -568598400, 88, "Akira Kurosawa",
@@ -142,9 +146,6 @@ public class Model {
 		//		""));
 		addUser(new User("wim", "Wim","van der", "Zijden","wim"));
 		addUser(new User("pim", "Pim",null, "Teunissen","pim"));
-		
-		sessions.put("abc", new Session(users.get("wim"), "abc"));
-		
 	}
 
 }

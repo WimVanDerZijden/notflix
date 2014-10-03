@@ -30,7 +30,9 @@ public class Movie {
 	private final Map<String,Rating> ratings = new HashMap<>();
 
 	@XmlElement
-	public double getAvgRating() {
+	public Double getAvgRating() {
+		if (ratings.size() == 0)
+			return null;
 		double sum = 0;
 		for (String username : ratings.keySet()) {
 			sum += ratings.get(username).getHalfStars();
@@ -39,7 +41,7 @@ public class Movie {
 	}
 	
 	@XmlElement
-	public int votes()
+	public int getVotes()
 	{
 		return ratings.size();
 	}
