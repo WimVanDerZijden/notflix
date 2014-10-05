@@ -1,7 +1,6 @@
 package vanderzijden.notflix.model;
 
 import javax.ws.rs.WebApplicationException;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,7 +14,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Rating {
 
 	/** A rating from 1 to 10, displayed as min. 0.5 and max. 5 stars */
-	@XmlElement
 	private int halfStars;
 	/** The user that issued the rating */
 	private User user;

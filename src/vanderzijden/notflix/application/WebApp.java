@@ -8,13 +8,13 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class WebApp extends ResourceConfig {
 
 	public WebApp() {
-		System.out.println("Web App started");
+		Log.info(this,"Web App started");
 		packages("vanderzijden.notflix.resource");
-		
-		// For custom Exception Listener for debugging uncomment next line
-		register(ExceptionListener.class);
 		// Make sure all classes are loaded
-		//this.getClasses();
+		this.getClasses();		
+		// For custom Exception Listener for debugging uncomment next line
+		//register(ExceptionListener.class);
+
 
 	}
 

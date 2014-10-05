@@ -10,7 +10,12 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import vanderzijden.notflix.model.Model;
+import vanderzijden.notflix.model.Movie;
+import vanderzijden.notflix.model.User;
 
 import com.google.gson.Gson;
 
@@ -29,10 +34,13 @@ import com.google.gson.Gson;
 public class AppContextListener implements ServletContextListener {
 
 	private static final String MODEL_SAVE_FILE = "model_save_file.json";
+	private static final String TOP_250_JSON_FILE = "top250.json";
+	
+	private ServletContext ctx;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		ServletContext ctx = event.getServletContext();
+		ctx = event.getServletContext();
 		Scanner scanner = null;
 		try {
 			File file = new File(getModelPath(ctx)); 
@@ -40,11 +48,11 @@ public class AppContextListener implements ServletContextListener {
 			scanner = new Scanner(file).useDelimiter("!@#endoffile!@#");
 			String in = scanner.next();
 			// Just for debugging. Remove for production release because it contains passwords as well.
-			System.out.println("AppContextListener.contextInitialized: Loading model saved as json: " + in);
+			Log.info(this,"Loading model saved as json.");
 			Model model = new Gson().fromJson(in, Model.class);
 			if (model == null) {
 				model = new Model();
-				model.loadTestData();
+				loadTestData(model);
 			}
 			ctx.setAttribute("model", model);
 		} catch (FileNotFoundException e) {
@@ -61,8 +69,7 @@ public class AppContextListener implements ServletContextListener {
 		Model model = (Model) ctx.getAttribute("model");
 		model.clearSessions();
 		String json = gson.toJson(model);
-		// Just for debugging. Remove for production release because it contains passwords as well.
-		System.out.println("AppContextListener.contextDestroyed: Saving model as json: " + json);
+		Log.info(this, "Saving model as json.");
 		try {
 			PrintWriter pw = new PrintWriter(getModelPath(ctx));
 			pw.print(json);
@@ -76,6 +83,35 @@ public class AppContextListener implements ServletContextListener {
 	private String getModelPath(ServletContext ctx)
 	{
 		return ctx.getRealPath("/WEB-INF") + "/" + MODEL_SAVE_FILE;
+	}
+	
+	private static String getMoviesPath(ServletContext ctx)
+	{
+		return ctx.getRealPath("/WEB-INF") + "/" + TOP_250_JSON_FILE;
+	}
+	
+	private void loadTestData(Model model) {
+		Scanner scanner = null;
+		try {
+			File file = new File(getMoviesPath(ctx));
+			// Simply use as delimiter a string that will 'never' occur in the source file
+			scanner = new Scanner(file).useDelimiter("!@#endoffile!@#");
+			String in = scanner.next();
+			JSONArray jsonMovies = new JSONArray(in);
+			Log.info(this, "First time loading " + jsonMovies.length() + " movies from " + TOP_250_JSON_FILE);
+			for (int n = 0; n < jsonMovies.length(); n++) {
+				JSONObject jsonMovie = jsonMovies.getJSONObject(n);
+				model.addMovie(Movie.parseFromOmdbApi(jsonMovie));
+			}
+		} catch (FileNotFoundException e) {
+			Log.severe(AppContextListener.class, "File not found: " + getMoviesPath(ctx));
+			e.printStackTrace();
+		} finally {
+			if (scanner != null)
+				scanner.close();
+		}
+		model.addUser(new User("wim", "Wim","van der", "Zijden","wim"));
+		model.addUser(new User("pim", "Pim",null, "Teunissen","pim"));
 	}
 
 }

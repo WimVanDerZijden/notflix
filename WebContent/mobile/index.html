@@ -1,0 +1,40 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>Notflix - Rating movies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+  <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+  <script src="js/notflix.js"></script>  
+</head>
+<body>
+  <div data-role="page" id="home-page">
+    <div data-role="header">
+      <h1>Search for your favourite movie</h1>
+    </div>
+    <div role="main">
+      <input id="movies-input" data-type="search" placeholder="Search movies by title and director...">
+      <ul id="listview-movies" data-role="listview" data-filter-theme="d" data-input="#movies-input">
+        <!-- Populated dynamically --> 
+      </ul>
+    </div>
+    <div data-role="footer">
+      <h6>&copy;Van der Zijden Enterprises 2014</h6>
+    </div>
+  </div>
+
+  <div data-role="page" id="movie-page">
+    <div data-role="header">
+      <h1>Page Title</h1>
+    </div>
+    <div role="main">
+      <p>Main content</p>
+    </div>
+    <div data-role="footer">
+      <h4>Page Footer</h4>
+    </div>
+  </div>
+
+</body>
+</html>

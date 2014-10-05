@@ -1,6 +1,5 @@
 package vanderzijden.notflix.model;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -8,7 +7,6 @@ public class Session {
 	
 	private User user;
 	
-	@XmlElement
 	private String token;
 	
 	public Session() {}
@@ -21,4 +19,18 @@ public class Session {
 	public User getUser() {
 		return user;
 	}
-}
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
+	
+} 

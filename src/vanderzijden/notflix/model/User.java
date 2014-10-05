@@ -10,16 +10,12 @@ import vanderzijden.notflix.application.Log;
 public class User {
 
 	/** Required */
-	@XmlElement
 	private String username;
 	/** Required */
-	@XmlElement
 	private String firstName;
 	/** Optional */
-	@XmlElement
 	private String namePrepositions;
 	/** Required */
-	@XmlElement
 	private String lastName;
 
 	/** Required */
@@ -46,6 +42,34 @@ public class User {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getNamePrepositions() {
+		return namePrepositions;
+	}
+
+	public void setNamePrepositions(String namePrepositions) {
+		this.namePrepositions = namePrepositions;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 }

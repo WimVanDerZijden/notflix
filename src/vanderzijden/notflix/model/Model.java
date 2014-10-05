@@ -3,6 +3,7 @@ package vanderzijden.notflix.model;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 
 import vanderzijden.notflix.application.Log;
+import vanderzijden.notflix.application.Util;
 
 public class Model {
 	
@@ -17,8 +19,6 @@ public class Model {
 	private final Map<String, User> users = new HashMap<>();
 	private final Map<String, Session> sessions = new HashMap<>();
 	 
-	private int moviesNextId = 1;
-	
 	private static final SecureRandom random = new SecureRandom();
 
 	// *** GET ***
@@ -71,26 +71,38 @@ public class Model {
 		}
 		return session;
 	}
+
 	/**
-	 * Search for q in titles and directors.
+	 * Fuzzy search for movies by title.
 	 * Case-insensitive.
+	 * Uses Levenshtein distance to match similar strings
 	 * 
-	 * If q is an empty string, all movies are returned 
-	 * 
+	 * If q is an empty string, all movies are returned.
+	 *  
 	 * @param q
+	 * @param limit
+	 * @param sorted
 	 * @return
 	 */
-	
-	public List<Movie> searchMovies(String q) {
+	public List<SearchMovie> searchMovies(String q, int limit, User user) {
 		q = q.toUpperCase();
-		List<Movie> result = new ArrayList<>();
+		List<SearchMovie> result = new ArrayList<>();
 		for (String imdb_tt : movies.keySet()) {
 			Movie movie = movies.get(imdb_tt);
-			if (movie.getTitle().toUpperCase().contains(q) ||
-					movie.getDirector().toUpperCase().contains(q)) {
-				result.add(movie);
+			String title = movie.getTitle().toUpperCase();
+			int editDistance;
+			if (title.equals(q)) {
+				editDistance = -1;
+			} else if (title.contains(q)) {
+				editDistance = 0;
+			} else {
+				editDistance = Util.getLevenshteinDistance(q, title);
+			}
+			if (editDistance < q.length() / 2) {
+				result.add(new SearchMovie(movie, user, editDistance));
 			}
 		}
+		Collections.sort(result);
 		return result;
 	}
 	
@@ -124,7 +136,7 @@ public class Model {
 
 	// *** OTHER ***
 	public void addMovie(Movie movie) {
-		movies.put(movie.getImdb_tt(), movie);
+		movies.put(movie.getImdbID(), movie);
 	}
 	
 	public void addUser(User user) {
@@ -133,19 +145,6 @@ public class Model {
 	
 	public void clearSessions() {
 		sessions.clear();
-	}
-	
-	public void loadTestData() {
-		System.out.println("Loading test data..");
-		addMovie(new Movie(moviesNextId++, "tt0042876", "Rashômon", -568598400, 88, "Akira Kurosawa",
-				"A heinous crime and its aftermath are recalled from differing points of view."));
-
-		addMovie(new Movie(moviesNextId++, "tt0071853", "Monty Python and the Holy Grail", 217468800, 91, "Terry Gilliam & Terry Jones",
-				"King Arthur and his knights embark on a low-budget search for the Grail, encountering many very silly obstacles."));
-		//addMovie(new Movie(moviesNextId++, "", "", 0, 0, "",
-		//		""));
-		addUser(new User("wim", "Wim","van der", "Zijden","wim"));
-		addUser(new User("pim", "Pim",null, "Teunissen","pim"));
 	}
 
 }
