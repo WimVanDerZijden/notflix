@@ -1,6 +1,23 @@
 package vanderzijden.notflix.application;
 
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
 public class Util {
+	
+	/**
+	 * Replace diacritical characters with 'regular' characters.
+	 * 
+	 * Source: http://stackoverflow.com/a/1215117/2947592
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String deAccent(String str) {
+	    String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD); 
+	    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+	    return pattern.matcher(nfdNormalizedString).replaceAll("");
+	}
 	
     /**
      * From Apache Commons Lang 2.6

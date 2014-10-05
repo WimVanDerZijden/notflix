@@ -85,11 +85,11 @@ public class Model {
 	 * @return
 	 */
 	public List<SearchMovie> searchMovies(String q, int limit, User user) {
-		q = q.toUpperCase();
+		q = Util.deAccent(q.toLowerCase());
 		List<SearchMovie> result = new ArrayList<>();
 		for (String imdb_tt : movies.keySet()) {
 			Movie movie = movies.get(imdb_tt);
-			String title = movie.getTitle().toUpperCase();
+			String title = Util.deAccent(movie.getTitle().toLowerCase());
 			int editDistance;
 			if (title.equals(q)) {
 				editDistance = -1;
