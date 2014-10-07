@@ -3,7 +3,6 @@ package vanderzijden.notflix.model;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +70,7 @@ public class Model {
 		}
 		return session;
 	}
+	/* This is too complicated and unnecessary for now.
 
 	/**
 	 * Fuzzy search for movies by title.
@@ -84,9 +84,10 @@ public class Model {
 	 * @param sorted
 	 * @return
 	 */
-	public List<SearchMovie> searchMovies(String q, int limit, User user) {
+	/*
+	public List<UserMovie> searchMovies(String q, User user) {
 		q = Util.deAccent(q.toLowerCase());
-		List<SearchMovie> result = new ArrayList<>();
+		List<UserMovie> result = new ArrayList<>();
 		for (String imdb_tt : movies.keySet()) {
 			Movie movie = movies.get(imdb_tt);
 			String title = Util.deAccent(movie.getTitle().toLowerCase());
@@ -98,12 +99,46 @@ public class Model {
 			} else {
 				editDistance = Util.getLevenshteinDistance(q, title);
 			}
-			if (editDistance < q.length() / 2) {
-				result.add(new SearchMovie(movie, user, editDistance));
+			if (editDistance < q.length() / 2 + 1) {
+				result.add(new UserMovie(movie, user, editDistance));
 			}
 		}
 		Collections.sort(result);
 		return result;
+	}
+	*/
+	/**
+	 * Search for movies by title.
+	 * 
+	 * Case-insensitive and converts diacritical characters,
+	 * e.g. 'é' to 'e'
+	 * 
+	 * @param q
+	 * @return
+	 */
+	public List<Movie> searchMovies(String q) {
+		if (q == null || q.equals("")) {
+			return searchAllMovies();
+		}
+		q = Util.deAccent(q.toLowerCase());
+		List<Movie> result = new ArrayList<>();
+		for (Movie movie : movies.values()) {
+			String title = Util.deAccent(movie.getTitle().toLowerCase());
+			if (title.contains(q)) {
+				result.add(movie);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Get all movies as an arraylist/
+	 * 
+	 * @return
+	 */
+	
+	public List<Movie> searchAllMovies() {
+		return new ArrayList<>(movies.values());
 	}
 	
 	// *** CREATE ***

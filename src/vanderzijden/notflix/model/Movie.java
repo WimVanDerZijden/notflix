@@ -43,6 +43,8 @@ public class Movie implements Comparable<Movie> {
 	
 	protected final Map<String,Rating> ratings = new HashMap<>();
 
+
+	
 	/**
 	 * Parsing OmdbApi JSON to Movie. We don't use Jackson to marshall it,
 	 * because we don't strive to be compliant with the

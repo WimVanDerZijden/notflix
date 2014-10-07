@@ -11,8 +11,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import vanderzijden.notflix.model.Movie;
-import vanderzijden.notflix.model.SearchMovie;
 import vanderzijden.notflix.model.User;
+import vanderzijden.notflix.resource.model.MovieSort;
+import vanderzijden.notflix.resource.model.MovieSort.SortOrder;
+import vanderzijden.notflix.resource.model.UserMovie;
 
 @Path("movie")
 public class MovieResource extends BaseResource {
@@ -28,12 +30,17 @@ public class MovieResource extends BaseResource {
 	
 	@GET
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
-	public List<SearchMovie> searchMovies(
+	public List<UserMovie> searchMovies(
 			@DefaultValue("") @QueryParam("q") String q,
-			@DefaultValue("10") @QueryParam("limit") int limit)
+			@DefaultValue("0") @QueryParam("begin") int begin,
+			@DefaultValue("10") @QueryParam("limit") int limit,
+			@DefaultValue("None") @QueryParam("sort") SortOrder sort)
 	{
 		User user = getUserOpt();
-		return getModel().searchMovies(q, limit, user);
+		List<Movie> movies = getModel().searchMovies(q);
+		MovieSort.sort(movies, sort);
+		List<Movie> moviesSublist = MovieSort.getSublist(movies, begin, limit); 
+		return UserMovie.get(moviesSublist, user);
 	}
 
 }
