@@ -42,24 +42,25 @@ public class AppContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		ctx = event.getServletContext();
 		Scanner scanner = null;
+		Model model = null;
 		try {
 			File file = new File(getModelPath(ctx)); 
 			// Simply use as delimiter a string that will 'never' occur in the source file
 			scanner = new Scanner(file).useDelimiter("!@#endoffile!@#");
 			String in = scanner.next();
-			// Just for debugging. Remove for production release because it contains passwords as well.
 			Log.info(this,"Loading model saved as json.");
-			Model model = new Gson().fromJson(in, Model.class);
-			if (model == null) {
-				model = new Model();
-				loadTestData(model);
-			}
-			ctx.setAttribute("model", model);
+			model = new Gson().fromJson(in, Model.class);
 		} catch (FileNotFoundException e) {
 			Log.warning(this,"Unable to load model from: " + getModelPath(ctx));
 		} finally {
-			scanner.close();
+			if (scanner != null)
+				scanner.close();
 		}
+		if (model == null) {
+			model = new Model();
+			loadTestData(model);
+		}
+		ctx.setAttribute("model", model);
 	}
 
 	@Override

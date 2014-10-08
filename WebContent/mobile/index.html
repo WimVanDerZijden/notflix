@@ -11,13 +11,31 @@
 <body>
   <div data-role="page" id="home-page">
     <div data-role="header">
-      <h1>Search for your favourite movie</h1>
+      <h1>NotFlix</h1>
+      <a href="#signin" class="ui-btn-right">Sign in</a>
     </div>
-    <div role="main">
-      <input id="movies-input" data-type="search" placeholder="Search movies by title and director...">
-      <ul id="listview-movies" data-role="listview" data-filter-theme="d" data-input="#movies-input">
-        <!-- Populated dynamically --> 
-      </ul>
+    <div role="main" class="ui-content">
+      <div data-role="tabs">
+	      <div data-role="navbar">
+	        <ul>
+	          <li><a href="#search" data-icon="search" class="ui-btn-active">Search</a></li>
+	          <li><a href="#popular" data-icon="star">Popular</a></li>
+	          <li><a href="#help" data-icon="info">Help</a></li>
+	        </ul>
+	      </div>
+	      <div id="search">
+		      <input id="movies-input" data-type="search" placeholder="Search movies by title and director...">
+		      <ul id="listview-movies" data-role="listview" data-filter-theme="d" data-input="#movies-input">
+		        <!-- Populated dynamically --> 
+		      </ul>
+	      </div>
+        <div id="popular">
+        
+        </div>
+        <div id="help">
+        
+        </div>
+      </div>
     </div>
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
