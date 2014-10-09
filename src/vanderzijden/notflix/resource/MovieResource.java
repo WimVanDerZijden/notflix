@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import vanderzijden.notflix.application.WebApp;
 import vanderzijden.notflix.model.Movie;
 import vanderzijden.notflix.model.User;
 import vanderzijden.notflix.resource.model.MovieSort;
@@ -49,7 +50,6 @@ public class MovieResource extends BaseResource {
 				.queryParam("limit", limit)
 				.queryParam("sort", sort)
 				.build();
-		System.out.println(next);
 		return Response.ok(UserMovie.get(moviesSublist, user))
 				.link(next, "next").build();
 	}

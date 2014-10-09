@@ -56,6 +56,7 @@ public class AppContextListener implements ServletContextListener {
 			if (scanner != null)
 				scanner.close();
 		}
+		// Failed to load model: create new model
 		if (model == null) {
 			model = new Model();
 			loadTestData(model);

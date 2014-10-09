@@ -1,9 +1,7 @@
 package vanderzijden.notflix.resource;
 
-import java.util.List;
-
 import javax.servlet.ServletContext;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.Context;
 
 import vanderzijden.notflix.model.Model;
@@ -25,7 +23,7 @@ public abstract class BaseResource {
 	@Context
 	private ServletContext ctx;
 	
-	@QueryParam("token")
+	@CookieParam("token")
 	private String token;
 	
 	private Session session;

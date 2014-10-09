@@ -3,36 +3,42 @@
 <head>
   <title>Notflix - Rating movies</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css" />
+  <!-- Remote Libraries -->
+  <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
   <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+  <!-- Local scripts -->
+  <script src="js/jquery.cookie.js"></script>
+  <link rel="stylesheet" href="css/notflix.css"> 
   <script src="js/notflix.js"></script>  
 </head>
 <body>
+  <!-- *** HOME PAGE *** -->
   <div data-role="page" id="home-page">
     <div data-role="header">
       <h1>NotFlix</h1>
-      <a href="#signin" class="ui-btn-right">Sign in</a>
+      <a href="#signout" id="signout-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
+      <a href="#signin" id="signin-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a> 
     </div>
     <div role="main" class="ui-content">
       <div data-role="tabs">
 	      <div data-role="navbar">
 	        <ul>
-	          <li><a href="#search" data-icon="search" class="ui-btn-active">Search</a></li>
-	          <li><a href="#popular" data-icon="star">Popular</a></li>
-	          <li><a href="#help" data-icon="info">Help</a></li>
+	          <li><a href="#search-tab" data-icon="search" class="ui-btn-active">Search</a></li>
+	          <li><a href="#popular-tab" data-icon="star">Popular</a></li>
+	          <li><a href="#help-tab" data-icon="info">Help</a></li>
 	        </ul>
 	      </div>
-	      <div id="search">
-		      <input id="movies-input" data-type="search" placeholder="Search movies by title and director...">
-		      <ul id="listview-movies" data-role="listview" data-filter-theme="d" data-input="#movies-input">
+	      <div id="search-tab">
+		      <input id="movies-input" data-type="search" placeholder="Search movies...">
+		      <ul id="listview-movies" data-role="listview" data-input="#movies-input" data-inset="true" data-filter="true">
 		        <!-- Populated dynamically --> 
 		      </ul>
 	      </div>
-        <div id="popular">
+        <div id="popular-tab">
         
         </div>
-        <div id="help">
+        <div id="help-tab">
         
         </div>
       </div>
@@ -40,8 +46,32 @@
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
+    <!-- *** POPUPS *** -->
+    <div data-role="popup" id="signin" data-overlay-theme="a" class="ui-content">
+			<form id="form-signin">
+			  <input type="text" placeholder="Username" name="username" required>
+			  <input type="password" placeholder="Password" name="password" required>
+			  <input type="submit" value="Sign in" data-theme="b">
+			</form>
+			<a href="#register-page">Register</a>
+      <h4 class="ui-icon-alert ui-btn-icon-left error">Invalid Credentials</h4>
+    </div>
+    <div data-role="popup" id="token-invalidated-popup" data-overlay-theme="a" class="ui-content">
+      <h3>Your session expired</h3>
+      <p>Please sign in again.</p>
+    </div>
+    <div data-role="popup" id="server-error-popup" data-overlay-theme="a" class="ui-content">
+      <h3>Error connecting to Server</h3>
+      <p>Check your internet connection.</p>
+    </div>
+    <div data-role="popup" id="signout" data-overlay-theme="a" class="ui-content">
+      <h3>Signed out</h3>
+      <p>Goodbye!</p>
+    </div>
+    
   </div>
 
+  <!-- *** MOVIE PAGE *** -->
   <div data-role="page" id="movie-page">
     <div data-role="header">
       <h1>Page Title</h1>
@@ -50,7 +80,20 @@
       <p>Main content</p>
     </div>
     <div data-role="footer">
-      <h4>Page Footer</h4>
+      <h6>&copy;Van der Zijden Enterprises 2014</h6>
+    </div>
+  </div>
+
+  <!-- *** REGISTER PAGE *** -->
+  <div data-role="page" id="register-page">
+    <div data-role="header">
+      <h1>Register</h1>
+    </div>
+    <div role="main">
+      <p>Main content</p>
+    </div>
+    <div data-role="footer">
+      <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
   </div>
 
