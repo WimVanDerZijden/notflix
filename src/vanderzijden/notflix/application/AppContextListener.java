@@ -34,7 +34,14 @@ import com.google.gson.Gson;
 public class AppContextListener implements ServletContextListener {
 
 	private static final String MODEL_SAVE_FILE = "model_save_file.json";
-	private static final String TOP_250_JSON_FILE = "top250.json";
+	/**
+	 *  Requested 729,513 movies via omdb-api.
+	 *  Added: 88,951
+	 *  Not found: 142,183 (main cause: foreign title movies that are in OMDB-API under English name)
+	 *  No poster: 497,700
+	 *  Other: 166
+	 */
+	private static final String MOVIES_JSON = "movies.json";
 	
 	private ServletContext ctx;
 	
@@ -89,7 +96,7 @@ public class AppContextListener implements ServletContextListener {
 	
 	private static String getMoviesPath(ServletContext ctx)
 	{
-		return ctx.getRealPath("/WEB-INF") + "/" + TOP_250_JSON_FILE;
+		return ctx.getRealPath("/WEB-INF") + "/" + MOVIES_JSON;
 	}
 	
 	private void loadTestData(Model model) {
@@ -100,7 +107,7 @@ public class AppContextListener implements ServletContextListener {
 			scanner = new Scanner(file).useDelimiter("!@#endoffile!@#");
 			String in = scanner.next();
 			JSONArray jsonMovies = new JSONArray(in);
-			Log.info(this, "First time loading " + jsonMovies.length() + " movies from " + TOP_250_JSON_FILE);
+			Log.info(this, "First time loading " + jsonMovies.length() + " movies from " + MOVIES_JSON);
 			for (int n = 0; n < jsonMovies.length(); n++) {
 				JSONObject jsonMovie = jsonMovies.getJSONObject(n);
 				model.addMovie(Movie.parseFromOmdbApi(jsonMovie));

@@ -9,6 +9,7 @@
   <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
   <!-- Local scripts -->
   <script src="js/jquery.cookie.js"></script>
+  <script src="js/jquery.donetyping.js"></script>
   <link rel="stylesheet" href="css/notflix.css"> 
   <script src="js/notflix.js"></script>  
 </head>
@@ -34,6 +35,12 @@
 		      <ul id="listview-movies" data-role="listview" data-input="#movies-input" data-inset="true" data-filter="true">
 		        <!-- Populated dynamically --> 
 		      </ul>
+		      <div data-role="navbar">
+		        <ul>
+		          <li><a id="previous-movies-search" data-icon="arrow-l">Previous</a></li>
+		          <li><a id="next-movies-search" data-icon="arrow-r">Next</a></li>
+		        </ul>
+		      </div>
 	      </div>
         <div id="popular-tab">
         

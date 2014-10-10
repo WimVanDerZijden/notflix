@@ -1,6 +1,5 @@
 package vanderzijden.notflix.resource.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -19,13 +18,14 @@ import vanderzijden.notflix.model.User;
  * @author Wim van der Zijden
  *
  */
+
 @XmlRootElement(name = "Movie")
 public class UserMovie extends Movie {
 	
 	private User user;
 
-	public static List<UserMovie> get(List<Movie> movies, User user) {
-		List<UserMovie> result = new ArrayList<>();
+	public static UserMovies get(List<Movie> movies, User user) {
+		UserMovies result = new UserMovies();
 		for (Movie movie : movies) {
 			result.add(new UserMovie(movie, user));
 		}

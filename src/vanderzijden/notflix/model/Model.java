@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.application.Util;
@@ -136,7 +138,6 @@ public class Model {
 	 * 
 	 * @return
 	 */
-	
 	public List<Movie> searchAllMovies() {
 		return new ArrayList<>(movies.values());
 	}

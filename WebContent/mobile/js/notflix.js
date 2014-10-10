@@ -1,6 +1,52 @@
-"use strict";
-
 $(document).on("pageinit", "#home-page", function () {
+  "use strict";
+  
+  // *** The model ***
+  
+  var model = (function() {
+    var movies = [];
+    var begin = 0;
+    var limit = 10;
+    
+    function setMovies(data) {
+      movies = data;
+      if (movies.length < limit) {
+        $("#next-movies-search").hide();
+      } else {
+        $("#next-movies-search").show();
+      }
+    }
+    
+    function getMovies() {
+      return movies;
+    }
+    
+    function nextPage() {
+      begin += 10;
+      if (begin > 0) {
+        $("#previous-movies-search").show();
+      } else {
+        $("#previous-movies-search").hide();
+      }
+    }
+    
+    function getBegin() {
+      return begin;
+    }
+    
+    function getLimit() {
+      return limit;
+    }
+    
+    return {
+      setMovies: setMovies,
+      getMovies: getMovies,
+      nextPage: nextPage,
+      getBegin: getBegin,
+      getLimit: getLimit
+    };
+    
+  })();
   
   // *** Global config vars ***
   
@@ -30,6 +76,11 @@ $(document).on("pageinit", "#home-page", function () {
     checkLoggedIn();
   })
   
+  $("#next-movies-search").click(function (e) {
+    model.nextPage();
+    loadMovies();
+  })
+  
   // *** AJAX ***
   // Tell the server to feed us json
   $.ajaxSetup({
@@ -51,15 +102,17 @@ $(document).on("pageinit", "#home-page", function () {
   
   var lastQuery = "";
   
+
   /** Load movies */
-  function loadMovies() {
+  function loadMovies () {
   	var query = $("#movies-input").val().trim();
+  	/*
   	if (lastQuery.length >= MIN_QUERY_LENGTH && query.contains(lastQuery)) {
   	  // If the new query contains the last query, the result-set is 
   	  // a subset of the previous result. So we can filter this client side.
   	  // No need for another Ajax-call.
   	  return;
-  	}
+  	}*/
     var $ul = $("#listview-movies");
     $ul.html("");
     lastQuery = query;
@@ -72,9 +125,11 @@ $(document).on("pageinit", "#home-page", function () {
         data: {
           q: query,
           sort: "TitleAsc",
-          limit: 1000
+          limit: model.getLimit(),
+          begin: model.getBegin()
         },
         success: function (data) {
+          model.setMovies(data);
           var html = "",
             n;
           for (n = 0; n < data.length; n += 1) {
@@ -92,18 +147,17 @@ $(document).on("pageinit", "#home-page", function () {
         }
       });
     }
-  }
-
+  };
+  
+  loadMovies();
+  
   $('#search-tab .ui-input-clear').click(function (e) {
     loadMovies();
   });
   
-  $("#movies-input").keyup(function (e) {
+  $("#movies-input").donetyping(function () {
     loadMovies();
-  });
-  
-  // The search field may be populated already on load
-  loadMovies();
+  }, 500);
   
   /** Perform the login */
   $('#form-signin').submit(function (e) {
@@ -134,14 +188,5 @@ $(document).on("pageinit", "#home-page", function () {
     var date = new Date(unixTime * 1000);
     return date.getFullYear();
   }
-  /*
-  /** Perfom with delay *//*
-  var delay = function(){
-    var timer = 0;
-    return function(callback, ms){
-      clearTimeout (timer);
-      timer = setTimeout(callback, ms);
-    };
-  };
-  */
+  
 });
