@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.ws.rs.WebApplicationException;
-
-import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.model.Movie;
 
 public class MovieSort {
@@ -34,19 +31,6 @@ public class MovieSort {
 		default:
 			throw new RuntimeException("Unimplemented sort order");
 		}
-	}
-	
-	public static List<Movie> getSublist(List<Movie> movies, int begin, int limit) {
-		if (movies.size() == 0)
-			return movies;
-		if (begin < 0 || limit < 1 || limit > 100 || begin >= movies.size()) {
-			Log.info(MovieSort.class, "Invalid begin and/or limit query param");
-			throw new WebApplicationException(400);
-		}
-		if (begin + limit > movies.size()) {
-			limit = movies.size() - begin;
-		}
-		return movies.subList(begin, begin + limit);
 	}
 	
 	public static class TitleSort implements Comparator<Movie>{

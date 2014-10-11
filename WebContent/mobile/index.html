@@ -19,7 +19,7 @@
     <div data-role="header">
       <h1>NotFlix</h1>
       <a href="#signout" id="signout-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
-      <a href="#signin" id="signin-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a> 
+      <a href="#signin" id="signin-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a>
     </div>
     <div role="main" class="ui-content">
       <div data-role="tabs">
@@ -37,8 +37,18 @@
 		      </ul>
 		      <div data-role="navbar">
 		        <ul>
-		          <li><a id="previous-movies-search" data-icon="arrow-l">Previous</a></li>
-		          <li><a id="next-movies-search" data-icon="arrow-r">Next</a></li>
+              <li><a href="#previous-movies-search" data-icon="carat-l">Previous</a></li>
+              <li>
+							<div class="ui-field-contain">
+						    <select name="select-native-3" id="select-native-3" data-iconpos="left">
+					        <option value="1">The 1st Option</option>
+					        <option value="2">The 2nd Option</option>
+					        <option value="3">The 3rd Option</option>
+					        <option value="4">The 4th Option</option>
+						    </select>
+							</div>
+              </li>
+              <li><a href="#next-movies-search" data-icon="carat-r">Next</a></li>
 		        </ul>
 		      </div>
 	      </div>
@@ -84,7 +94,8 @@
       <h1>Page Title</h1>
     </div>
     <div role="main">
-      <p>Main content</p>
+      	      <a href="#home-page">Movie page</a>
+	      
     </div>
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>

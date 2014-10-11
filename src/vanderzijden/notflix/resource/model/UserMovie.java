@@ -19,19 +19,11 @@ import vanderzijden.notflix.model.User;
  *
  */
 
-@XmlRootElement(name = "Movie")
+@XmlRootElement(name = "movie")
 public class UserMovie extends Movie {
 	
 	private User user;
 
-	public static UserMovies get(List<Movie> movies, User user) {
-		UserMovies result = new UserMovies();
-		for (Movie movie : movies) {
-			result.add(new UserMovie(movie, user));
-		}
-		return result;
-	}
-	
 	public UserMovie() {
 		super();
 	}

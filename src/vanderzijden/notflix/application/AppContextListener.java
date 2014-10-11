@@ -41,7 +41,7 @@ public class AppContextListener implements ServletContextListener {
 	 *  No poster: 497,700
 	 *  Other: 166
 	 */
-	private static final String MOVIES_JSON = "movies.json";
+	private static final String MOVIES_JSON = "top250.json";
 	
 	private ServletContext ctx;
 	
