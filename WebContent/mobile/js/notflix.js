@@ -16,7 +16,7 @@ $(document).on("pageinit", "#home-page", function () {
     
     function setMovies(data) {
       movies = data["movies"];
-      length = data["size"];
+      size = data["size"];
     }
 
     function clearMovies() {
@@ -49,6 +49,25 @@ $(document).on("pageinit", "#home-page", function () {
     function setQuery(newQuery) {
       query = newQuery;
     }
+    
+    function nextPage() {
+      page += 1;
+      var maxPage = Math.ceil(size / pageSize) - 1;
+      if (page > maxPage) {
+    	page = maxPage;
+    	return false;
+      }
+      return true;
+    }
+    
+    function previousPage() {
+      page -= 1;
+      if (page < 0) {
+        page = 0;
+        return false;
+      }
+      return true;
+    }
 
     function getSearchParams() {
       return {
@@ -68,7 +87,9 @@ $(document).on("pageinit", "#home-page", function () {
       getQuery: getQuery,
       setQuery: setQuery,
       getSearchParams: getSearchParams,
-      clearMovies: clearMovies
+      clearMovies: clearMovies,
+      nextPage: nextPage,
+      previousPage: previousPage
     };
     
   })();
@@ -142,8 +163,9 @@ $(document).on("pageinit", "#home-page", function () {
       if (query.length < minQueryLength) {
         model.clearMovies();
         view.loadMovies();
+        $(".search-info").hide();
       }
-      else if (query !== model.getQuery()) {
+      else {
         view.moviesSetLoading();
         model.setQuery(query);
         $.ajax({
@@ -152,6 +174,8 @@ $(document).on("pageinit", "#home-page", function () {
           success: function (data) {
             model.setMovies(data);
             view.loadMovies();
+            $(".search-info").show();
+            $(".search-info span").html(model.getSize());
           },
           error: function (data) {
             model.setQuery("");
@@ -201,14 +225,24 @@ $(document).on("pageinit", "#home-page", function () {
     }
   
     /** Hide error message when sign-in popup is opened */
-    $('#signin-popup-anchor').click(function (e) {
+    $('#signin-popup-anchor').click(function () {
       $('#signin .error').hide();
     });
     
-    $("#signout-popup-anchor").click(function (e) {
+    $("#signout-popup-anchor").click(function () {
       $.removeCookie("token", { path: "/"});
       checkLoggedIn();
     })
+    
+    $("#search-tab .next").click(function() {
+      if (model.nextPage())
+        loadMovies();
+    });
+
+    $("#search-tab .previous").click(function() {
+        if (model.previousPage())
+          loadMovies();
+      });
 
     // *** INIT *** \\
     checkLoggedIn();

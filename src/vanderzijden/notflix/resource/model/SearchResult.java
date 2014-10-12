@@ -41,8 +41,8 @@ public class SearchResult {
 		int begin = page * pageSize;
 		int end = begin + pageSize;
 		// ...but be forgiving when they are out of range
-		if (begin >= movies.size()) {
-			begin = movies.size() - 1;
+		if (begin > movies.size()) {
+			begin = movies.size();
 		}
 		if (end > movies.size()) {
 			end = movies.size();

@@ -32,23 +32,14 @@
 	      </div>
 	      <div id="search-tab">
 		      <input id="movies-input" data-type="search" placeholder="Search movies...">
+		      <div data-role="ui-content" class="ui-content search-info"><span>0</span> matches</div>
 		      <ul id="listview-movies" data-role="listview" data-input="#movies-input" data-inset="true" data-filter="true">
-		        <!-- Populated dynamically --> 
+		        <!-- Populated dynamically -->
 		      </ul>
 		      <div data-role="navbar">
 		        <ul>
-              <li><a href="#previous-movies-search" data-icon="carat-l">Previous</a></li>
-              <li>
-							<div class="ui-field-contain">
-						    <select name="select-native-3" id="select-native-3" data-iconpos="left">
-					        <option value="1">The 1st Option</option>
-					        <option value="2">The 2nd Option</option>
-					        <option value="3">The 3rd Option</option>
-					        <option value="4">The 4th Option</option>
-						    </select>
-							</div>
-              </li>
-              <li><a href="#next-movies-search" data-icon="carat-r">Next</a></li>
+              <li><button class="previous" data-icon="carat-l">Previous</button></li>
+              <li><button class="next" data-icon="carat-r">Next</button></li>
 		        </ul>
 		      </div>
 	      </div>
