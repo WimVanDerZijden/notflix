@@ -1,18 +1,22 @@
-$(document).on("pageinit", "#home-page", function () {
+//$(document).on("pageinit", "#home-page", function () {
+$(document).ready(function () {
   "use strict";
-  console.log("Init page: #home-page");
   // MVC Revealing Module Pattern \\
   
   // *** MODEL *** \\
   
   var model = (function() {
 
+    // #home-page vars
     var movies = [];
     var size = 0;
     var page = 0;
     var pageSize = 10;
     var query = "";
     var sort = "TitleAsc";
+    
+    // #movie-page vars
+    var movie;
     
     function setMovies(data) {
       movies = data["movies"];
@@ -48,14 +52,23 @@ $(document).on("pageinit", "#home-page", function () {
 
     function setQuery(newQuery) {
       query = newQuery;
+      page = 0;
+    }
+    
+    function setSort(newSort) {
+      sort = newSort;
+    }
+    
+    function setPageSize(newPageSize) {
+      pageSize = newPageSize;
     }
     
     function nextPage() {
       page += 1;
       var maxPage = Math.ceil(size / pageSize) - 1;
       if (page > maxPage) {
-    	page = maxPage;
-    	return false;
+        page = maxPage;
+        return false;
       }
       return true;
     }
@@ -78,6 +91,26 @@ $(document).on("pageinit", "#home-page", function () {
       };
     }
     
+    function getPagingInfo() {
+      var start = page * pageSize + 1;
+      var end = (page + 1) * pageSize;
+      if (start > size) {
+        return "";
+      }
+      if (end > size) {
+        end = size;
+      }
+      return "(showing " + start + " - " + end + ")";
+    }
+    
+    function getMovie() {
+      return movie;
+    }
+    
+    function setMovie(data) {
+      movie = data;
+    }
+    
     return {
       setMovies: setMovies,
       getMovies: getMovies,
@@ -89,7 +122,12 @@ $(document).on("pageinit", "#home-page", function () {
       getSearchParams: getSearchParams,
       clearMovies: clearMovies,
       nextPage: nextPage,
-      previousPage: previousPage
+      previousPage: previousPage,
+      setSort: setSort,
+      setPageSize: setPageSize,
+      getPagingInfo: getPagingInfo,
+      getMovie: getMovie,
+      setMovie: setMovie
     };
     
   })();
@@ -111,24 +149,64 @@ $(document).on("pageinit", "#home-page", function () {
   	    n;
   	  for (n = 0; n < data.length; n += 1) {
   	    html += "<li class='ui-btn' id='" + data[n]["imdbID"]+ "'>"
+          + "<a href='#movie-page?imdbID=" + data[n]["imdbID"] + "' data-transition='slide'>"
   	      + "<img alt='film poster' src='" + data[n]["poster"] + "' onError=\"this.onerror=null;this.src='media/no-image.svg';\">"
   	      + "<h3>" + data[n]["title"] + " (" + getYear(data[n]["released"]) + ")</h3>"
+          + "<p class='imdb'>Imdb: " + data[n]["imdbRating"].toLocaleString() + " by " + data[n]["imdbVotes"].toLocaleString() + " users</p>"
   	      + "<p>" + data[n]["plot"] + "</p>"
-  	      + "</li>";
+  	      + "</a></li>";
   	  }
   	  $movies.html(html);
   	  $movies.listview("refresh");
+  	  
+      $(".search-info").show();
+      $(".search-info .count-info").html(model.getSize());
+      $(".search-info .paging-info").html(model.getPagingInfo());
   	}
- 
+  	
+  	function loadMovie() {
+  	  var movie = model.getMovie();
+      $("#movie-poster").html('<img src="' + movie["poster"] + '">');
+      
+  	  var html = '<li class="header">' + movie["title"] + '</li>'
+      + '<li class="caption">' + movie["runtime"] +' min  -  ' + movie["genre"] +'  -  ' + getDate(movie["released"]) + ' (' + movie["country"] +')</li>'
+      + '<li>' + movie["plot"] + '</li>'
+      + '<li><b>Directed by:</b> ' + movie["director"] + '</li>'
+      + '<li><b>Written by:</b> ' + movie["writer"] + '</li>'
+      + '<li><b>Actors:</b> ' + movie["actors"] +'</li>'
+      + '<li class="imdb"><a href="http://www.imdb.com/title/' + movie["imdbID"] +'/"><img class="imdb-icon" src="media/imdb.png"><p>' + movie['imdbRating'].toLocaleString() + '/10 from ' + movie["imdbVotes"].toLocaleString() + ' users</p></a></li>'
+  	  var $movie = $("#movie-detail");
+  	  $movie.html(html);
+  	  $movie.listview("refresh");
+  	}
+
+    function checkLoggedIn() {
+      if ($.cookie("token")) {
+        $(".signout-popup-anchor").show();
+        $(".signin-popup-anchor").hide();
+      } else {
+        $(".signout-popup-anchor").hide();
+        $(".signin-popup-anchor").show();
+      }
+    }
+  	
     /** Retrieve the year from Unix time */
     function getYear(unixTime) {
       var date = new Date(unixTime * 1000);
       return date.getFullYear();
     }
+    
+    /** Retrieve full date from Unix time */
+    function getDate(unixTime) {
+      var date = new Date(unixTime * 1000);
+      return date.toLocaleDateString();
+    }
 
   	return {
   	  moviesSetLoading: moviesSetLoading,
-  	  loadMovies: loadMovies
+  	  loadMovies: loadMovies,
+  	  loadMovie: loadMovie,
+  	  checkLoggedIn: checkLoggedIn
   	};
 
   })();
@@ -137,7 +215,7 @@ $(document).on("pageinit", "#home-page", function () {
 
   var controller = (function () {
 
-    var minQueryLength = 1;
+    var minQueryLength = 0;
 
     // *** AJAX ***
     // Tell the server to feed us json
@@ -152,7 +230,7 @@ $(document).on("pageinit", "#home-page", function () {
         // Remove it and display a dialog.
         $.removeCookie("token", { path: "/"});
         $("#token-invalidated-popup").popup("open");
-        checkLoggedIn();
+        view.checkLoggedIn();
       } else {
         $('#server-error-popup').popup("open");
       }
@@ -167,21 +245,34 @@ $(document).on("pageinit", "#home-page", function () {
       }
       else {
         view.moviesSetLoading();
-        model.setQuery(query);
+        if (model.getQuery() !== query) {
+          model.setQuery(query);
+        }
+        model.setSort($("#sort-list").val());
+        model.setPageSize($("#limit-list").val());
         $.ajax({
           url: "../resources/movie",
           data: model.getSearchParams(),
           success: function (data) {
             model.setMovies(data);
             view.loadMovies();
-            $(".search-info").show();
-            $(".search-info span").html(model.getSize());
           },
           error: function (data) {
             model.setQuery("");
           }
         });
       }
+    }
+    
+    function loadMovie(imdbID) {
+      localStorage.setItem("imdbID", imdbID);
+      $.ajax({
+        url: "../resources/movie/" + imdbID,
+        success: function (data) {
+          model.setMovie(data);
+          view.loadMovie();
+        }
+      });
     }
 
     /** Perform the login */
@@ -197,13 +288,35 @@ $(document).on("pageinit", "#home-page", function () {
           $.cookie("token", data["token"], { path: "/"} );
           $('#signin').popup("close");        
           $.mobile.loading("hide");
-          checkLoggedIn();
+          view.checkLoggedIn();
         },
         error: function(data) {
           $('#signin .error').show();
           $.mobile.loading("hide");   
         }
       });
+    });
+
+    // *** Listeners *** \\\
+    
+    /** Hide error message when sign-in popup is opened */
+    $('.signin-popup-anchor').click(function () {
+      $('#signin .error').hide();
+    });
+    
+    $(".signout-popup-anchor").click(function () {
+      $.removeCookie("token", { path: "/"});
+      view.checkLoggedIn();
+    });
+    
+    $("#search-tab .next").click(function() {
+      if (model.nextPage())
+        loadMovies();
+    });
+
+    $("#search-tab .previous").click(function() {
+      if (model.previousPage())
+        loadMovies();
     });
 
     $('#search-tab .ui-input-clear').click(function () {
@@ -213,41 +326,43 @@ $(document).on("pageinit", "#home-page", function () {
     $("#movies-input").donetyping(function () {
       loadMovies();
     }, 500);
+    
+    $("#sort-list").change(function() {
+      loadMovies();
+    });
+    
+    $("#limit-list").change(function() {
+      loadMovies();
+    });
 
-    function checkLoggedIn() {
-      if ($.cookie("token")) {
-        $("#signout-popup-anchor").show();
-        $("#signin-popup-anchor").hide();
-      } else {
-        $("#signout-popup-anchor").hide();
-        $("#signin-popup-anchor").show();
+    
+    // *** INIT *** \\
+    
+    function loadPage(pageId, data) {
+      view.checkLoggedIn();
+      switch(pageId) {
+      case "home-page":
+        loadMovies();
+        break;
+      case "movie-page":
+        try {
+          loadMovie(data.options.pageData.imdbID);
+        } catch (err) {
+          // Query param imdbID not found. Try localStorage.
+          loadMovie(localStorage.getItem("imdbID"));
+        }
+        break;
       }
     }
-  
-    /** Hide error message when sign-in popup is opened */
-    $('#signin-popup-anchor').click(function () {
-      $('#signin .error').hide();
+
+    /** Run the loadPage logic for the initial page */
+    loadPage($("body").pagecontainer("getActivePage").prop("id"), null);
+    
+    /** Run the loadPage logic if a new page is loaded */
+    $("body").on("pagecontainerbeforetransition", function(event, data) {
+      loadPage(data.toPage[0].id, data);
     });
     
-    $("#signout-popup-anchor").click(function () {
-      $.removeCookie("token", { path: "/"});
-      checkLoggedIn();
-    })
-    
-    $("#search-tab .next").click(function() {
-      if (model.nextPage())
-        loadMovies();
-    });
-
-    $("#search-tab .previous").click(function() {
-        if (model.previousPage())
-          loadMovies();
-      });
-
-    // *** INIT *** \\
-    checkLoggedIn();
-    loadMovies();
-
   })();
 
 });

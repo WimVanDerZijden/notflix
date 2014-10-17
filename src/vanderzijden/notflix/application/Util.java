@@ -19,6 +19,18 @@ public class Util {
 	    return pattern.matcher(nfdNormalizedString).replaceAll("");
 	}
 	
+	/**
+	 * Convert the input string to lowercase, replace diacritical characters
+	 * and remove any punctuation and other special characters.
+	 * 
+	 * Meant to use for easier searching.
+	 * 
+	 * @return
+	 */
+	public static String toPlainText(String in) {
+		return deAccent(in.toLowerCase()).replaceAll("[^\\w\\s]","");
+	}
+	
     /**
      * From Apache Commons Lang 2.6
      * 

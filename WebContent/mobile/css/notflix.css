@@ -7,3 +7,61 @@
 .page-button {
 	width: 20%;
 }
+
+.center {
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+}
+
+#listview-movies .imdb {
+	position: absolute;
+  right: 5em;
+  top: 1.5em;
+}
+
+#listview-movies h3 {
+	max-width: 60%;
+}
+
+#movie-detail li {
+  white-space: normal;
+}
+
+#movie-detail .header {
+	font-size: 1.7em;
+	font-weight: 700;
+}
+
+#movie-detail .caption {
+	font-size: .8em;
+  line-height: 1.2em;
+}
+
+#movie-detail .imdb p {
+  font-size: 1em;
+}
+
+#movie-detail .imdb-icon {
+	left: 1em;
+  top: 30%;
+	float: left;
+}
+
+/** JQM Tutorial advices em units for breakpoint */
+@media all and (max-width: 35em) {
+	.ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b {
+	  width: 100%;
+	  float: none;
+	}
+	
+	#listview-movies .imdb {
+	 display: none;
+	}
+	
+	#listview-movies h3 {
+    max-width: 100%;
+  }
+}

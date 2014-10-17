@@ -7,19 +7,22 @@
   <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
   <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
-  <!-- Local scripts -->
+  <!-- Plugins -->
   <script src="js/jquery.cookie.js"></script>
   <script src="js/jquery.donetyping.js"></script>
+  <script src="js/jqm.page.params.js"></script>
+  <!-- Custom scripts --> 
   <link rel="stylesheet" href="css/notflix.css"> 
-  <script src="js/notflix.js"></script>  
+  <script src="js/notflix.js"></script>
 </head>
 <body>
+
   <!-- *** HOME PAGE *** -->
   <div data-role="page" id="home-page">
     <div data-role="header">
       <h1>NotFlix</h1>
-      <a href="#signout" id="signout-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
-      <a href="#signin" id="signin-popup-anchor" class="ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a>
+      <a href="#signout" class="signout-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
+      <a href="#signin" class="signin-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a>
     </div>
     <div role="main" class="ui-content">
       <div data-role="tabs">
@@ -32,8 +35,28 @@
 	      </div>
 	      <div id="search-tab">
 		      <input id="movies-input" data-type="search" placeholder="Search movies...">
-		      <div data-role="ui-content" class="ui-content search-info"><span>0</span> matches</div>
-		      <ul id="listview-movies" data-role="listview" data-input="#movies-input" data-inset="true" data-filter="true">
+          <div data-role="ui-content" class="ui-content search-info"><span class="count-info">0</span> matches <span class="paging-info">(showing 1 - 10)</span></div>
+ 	        <div class="ui-grid-a">
+ 	          <div class="ui-block-a">
+	            <select name="sort" id="sort-list">
+	              <option value="TitleAsc" selected>Title (A-Z)</option>
+	              <option value="TitleDesc">Title (Z-A)</option>
+	              <option value="ImdbRatingDesc">IMDb Rating</option>
+                <option value="ImdbVotesDesc">IMDb Votes</option>
+                <option value="ReleasedDesc">Newer first</option>
+                <option value="ReleasedAsc">Older first</option>
+	            </select>
+            </div>
+            <div class="ui-block-b">
+	            <select name="limit" id="limit-list">
+	              <option value="10" selected>10 results</option>
+	              <option value="20">20 results</option>
+	              <option value="50">50 results</option>
+	              <option value="100">100 results</option>
+	            </select>
+            </div>
+          </div>
+		      <ul id="listview-movies" data-role="listview" data-input="#movies-input" data-inset="true">
 		        <!-- Populated dynamically -->
 		      </ul>
 		      <div data-role="navbar">
@@ -54,7 +77,8 @@
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
-    <!-- *** POPUPS *** -->
+    
+    <!-- *** SIGN IN POP UPS *** -->
     <div data-role="popup" id="signin" data-overlay-theme="a" class="ui-content">
 			<form id="form-signin">
 			  <input type="text" placeholder="Username" name="username" required>
@@ -82,15 +106,28 @@
   <!-- *** MOVIE PAGE *** -->
   <div data-role="page" id="movie-page">
     <div data-role="header">
-      <h1>Page Title</h1>
+      <h1>Notflix</h1>
+      <a href="#home-page" class="ui-btn-left" data-icon="arrow-l">Back</a> 
+      <a href="#signout" class="signout-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
+      <a href="#signin" class="signin-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a>
     </div>
-    <div role="main">
-      	      <a href="#home-page">Movie page</a>
-	      
+    
+    <div role="main" class="ui-content">
+      <div class="ui-grid-a">
+        <div class="ui-block-a center" id="movie-poster">
+          <!-- Loaded dynamically -->
+	      </div>
+	      <div class="ui-block-b">
+		      <ul data-role="listview" id="movie-detail" data-icon="false" data-inset="true">
+            <!-- Loaded dynamically -->
+					</ul>
+	      </div>
+      </div>
     </div>
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
+    
   </div>
 
   <!-- *** REGISTER PAGE *** -->

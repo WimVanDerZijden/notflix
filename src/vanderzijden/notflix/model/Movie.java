@@ -13,13 +13,17 @@ import java.util.regex.Pattern;
 import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.json.JSONObject;
 
 import vanderzijden.notflix.application.Log;
+import vanderzijden.notflix.application.Util;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @XmlRootElement
-public class Movie implements Comparable<Movie> {
+public class Movie {
 
 	private static int movieNextId = 1;
 	
@@ -27,6 +31,8 @@ public class Movie implements Comparable<Movie> {
 	private int id;
 	private String imdbID;
 	private String title;
+	/** The title in lowercase and stripped of special characters and diacritical charactars. For use with searching and sorting */
+	private String plainTitle;
 	private long released;
 	private int runtime;
 	private String director;
@@ -38,6 +44,9 @@ public class Movie implements Comparable<Movie> {
 	private String language;
 	private String awards;
 	private URI poster;
+	private int imdbVotes;
+	private double imdbRating; 
+	
 	
 	// Context specific variables */
 	
@@ -81,8 +90,7 @@ public class Movie implements Comparable<Movie> {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy z", Locale.US);
 				movie.setReleased(sdf.parse(attr + " UTC").getTime() / 1000);
 			}
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			Log.warning(Movie.class, "Could not parse released: " + attr);
 		}
 		try {
@@ -97,6 +105,23 @@ public class Movie implements Comparable<Movie> {
 			Log.warning(Movie.class, "Could not parse runtime: " + attr);
 			Log.warning(Movie.class, e.getMessage());
 		}
+		try {
+			attr = json.getString("imdbRating");
+			if (!attr.contains("N/A")) {
+				movie.setImdbRating(Double.parseDouble(attr));
+			}
+		} catch (NumberFormatException e) {
+			Log.warning(Movie.class, "Unable to parse Imdb Rating as double: " + attr);
+		}
+		try {
+			attr = json.getString("imdbVotes");
+			if (!attr.contains("N/A")) {
+				movie.setImdbVotes(Integer.parseInt(attr.replace(",", "")));
+			}
+		} catch (NumberFormatException e) {
+			Log.warning(Movie.class, "Unable to parse Imdb votes as int: " + attr);
+		}
+
 		return movie;
 	}
 	
@@ -122,6 +147,8 @@ public class Movie implements Comparable<Movie> {
 		language = movie.language;
 		awards = movie.awards;
 		poster = movie.poster;
+		imdbRating = movie.imdbRating;
+		imdbVotes = movie.imdbVotes;
 	}
 	
 	@XmlElement
@@ -216,9 +243,16 @@ public class Movie implements Comparable<Movie> {
 
 	public void setTitle(String title) {
 		this.title = title;
+		this.plainTitle = Util.toPlainText(title);
+	}
+	
+	@XmlTransient
+	@JsonIgnore
+	public String getPlainTitle() {
+		return plainTitle;
 	}
 
-	public long getReleased() {
+	public Long getReleased() {
 		return released;
 	}
 
@@ -306,10 +340,20 @@ public class Movie implements Comparable<Movie> {
 		this.poster = poster;
 	}
 
-	@Override
-	public int compareTo(Movie movie) {
-		return getTitle().compareTo(movie.getTitle());
+	public int getImdbVotes() {
+		return imdbVotes;
 	}
 
-	
+	public void setImdbVotes(int imdbVotes) {
+		this.imdbVotes = imdbVotes;
+	}
+
+	public Double getImdbRating() {
+		return imdbRating;
+	}
+
+	public void setImdbRating(double imdbRating) {
+		this.imdbRating = imdbRating;
+	}
+
 }

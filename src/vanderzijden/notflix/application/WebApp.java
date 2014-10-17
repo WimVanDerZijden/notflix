@@ -9,12 +9,12 @@ public class WebApp extends ResourceConfig {
 
 	public WebApp() {
 		Log.info(this,"Web App started");
-		packages("vanderzijden.notflix.resource");
+		packages("vanderzijden.notflix");
 		// Make sure all classes are loaded
-		this.getClasses();		
+		this.getClasses();	
+
 		// For custom Exception Listener for debugging uncomment next line
 		//register(ExceptionListener.class);
-
 
 	}
 

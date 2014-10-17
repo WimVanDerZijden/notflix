@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.application.Util;
@@ -122,11 +120,10 @@ public class Model {
 		if (q == null || q.equals("")) {
 			return searchAllMovies();
 		}
-		q = Util.deAccent(q.toLowerCase());
+		q = Util.toPlainText(q);
 		List<Movie> result = new ArrayList<>();
 		for (Movie movie : movies.values()) {
-			String title = Util.deAccent(movie.getTitle().toLowerCase());
-			if (title.contains(q)) {
+			if (movie.getPlainTitle().contains(q)) {
 				result.add(movie);
 			}
 		}
