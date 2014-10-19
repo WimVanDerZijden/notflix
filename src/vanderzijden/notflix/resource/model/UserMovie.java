@@ -37,17 +37,17 @@ public class UserMovie extends Movie {
 	}
 	
 	/**
-	 * Get rating for this user.
+	 * Get rating for this user (in half stars).
 	 * 
 	 * @param user
 	 * @return
 	 */
 	@XmlElement
-	public Rating getRating() {
-		if (user != null) {
-			return ratings.get(user.getUsername());
+	public Integer getRating() {
+		if (user != null && ratings.get(user.getUsername()) != null) {
+			return ratings.get(user.getUsername()).getHalfStars();
 		}
-		return null;
+		return 0;
 	}
 
 }

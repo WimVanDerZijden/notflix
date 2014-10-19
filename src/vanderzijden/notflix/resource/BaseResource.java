@@ -35,6 +35,13 @@ public abstract class BaseResource {
 	 * @return
 	 */
 	protected Model getModel() {
+		/* Uncomment to simulate slow connection*/
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}/**/
 		return (Model) ctx.getAttribute("model");
 	}
 	

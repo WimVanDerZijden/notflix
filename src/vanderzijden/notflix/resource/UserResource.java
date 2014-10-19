@@ -3,12 +3,12 @@ package vanderzijden.notflix.resource;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -21,11 +21,11 @@ public class UserResource extends BaseResource {
 	@POST
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createUser(
-			@QueryParam("username") String username,
-			@QueryParam("firstName") String firstName,
-			@QueryParam("namePrepositions") String namePrepositions,
-			@QueryParam("lastName") String lastName,
-			@QueryParam("password") String password)
+			@FormParam("username") String username,
+			@FormParam("firstName") String firstName,
+			@FormParam("namePrepositions") String namePrepositions,
+			@FormParam("lastName") String lastName,
+			@FormParam("password") String password)
 	{
 		User user = getModel().createUser(username, firstName, namePrepositions, lastName, password);
 		URI uri = UriBuilder.fromResource(UserResource.class).path(username).build();

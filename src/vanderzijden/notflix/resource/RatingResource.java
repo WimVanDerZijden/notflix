@@ -3,13 +3,13 @@ package vanderzijden.notflix.resource;
 import java.net.URI;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -26,7 +26,7 @@ public class RatingResource extends BaseResource {
 	@POST
 	public Response createRating(
 			@PathParam("imdb_tt") String imdb_tt,
-			@QueryParam("halfStars") int halfStars)
+			@FormParam("halfStars") int halfStars)
 	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
@@ -41,7 +41,7 @@ public class RatingResource extends BaseResource {
 	@PUT
 	public Rating updateRating(
 			@PathParam("imdb_tt") String imdb_tt,
-			@QueryParam("halfStars") int halfStars)
+			@FormParam("halfStars") int halfStars)
 	{
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);

@@ -46,14 +46,8 @@ public class Movie {
 	private URI poster;
 	private int imdbVotes;
 	private double imdbRating; 
-	
-	
-	// Context specific variables */
-	
-	protected final Map<String,Rating> ratings = new HashMap<>();
+	protected Map<String,Rating> ratings = new HashMap<>();
 
-
-	
 	/**
 	 * Parsing OmdbApi JSON to Movie. We don't use Jackson to marshall it,
 	 * because we don't strive to be compliant with the
@@ -149,6 +143,7 @@ public class Movie {
 		poster = movie.poster;
 		imdbRating = movie.imdbRating;
 		imdbVotes = movie.imdbVotes;
+		ratings = movie.ratings;
 	}
 	
 	@XmlElement

@@ -3,6 +3,8 @@ package vanderzijden.notflix.model;
 import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import vanderzijden.notflix.application.Log;
+
 /**
  * Ratings are stored in a list on the Movie object.
  * Therefore, there is no need for a Movie attribute.
@@ -26,8 +28,10 @@ public class Rating {
 	}
 
 	public void setHalfStars(int halfStars) {
-		if (halfStars < 1 || halfStars > 10)
-			throw new WebApplicationException(400);
+		if (halfStars < 1 || halfStars > 10) {
+			Log.info(this, "Invalid value for halfStars");
+			throw new WebApplicationException("Invalid value for halfStars",400);
+		}
 		this.halfStars = halfStars;
 	}
 	

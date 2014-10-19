@@ -5,12 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Remote Libraries -->
   <link rel="stylesheet" href="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
+  <link rel="stylesheet" type="text/css" href="css/starbox.css" />
+
+  <script src='//ajax.googleapis.com/ajax/libs/prototype/1/prototype.js'></script>
+  <script src='//ajax.googleapis.com/ajax/libs/scriptaculous/1/scriptaculous.js'></script>
   <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script>jQuery.noConflict();</script>
   <script src="//code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+
   <!-- Plugins -->
   <script src="js/jquery.cookie.js"></script>
   <script src="js/jquery.donetyping.js"></script>
   <script src="js/jqm.page.params.js"></script>
+  <script src='js/starbox.js'></script>
   <!-- Custom scripts --> 
   <link rel="stylesheet" href="css/notflix.css"> 
   <script src="js/notflix.js"></script>
@@ -29,7 +36,7 @@
 	      <div data-role="navbar">
 	        <ul>
 	          <li><a href="#search-tab" data-icon="search" class="ui-btn-active">Search</a></li>
-	          <li><a href="#popular-tab" data-icon="star">Popular</a></li>
+	          <li><a href="#popular-tab" data-icon="star">My Ratings</a></li>
 	          <li><a href="#help-tab" data-icon="info">Help</a></li>
 	        </ul>
 	      </div>
@@ -67,7 +74,7 @@
 		      </div>
 	      </div>
         <div id="popular-tab">
-        
+
         </div>
         <div id="help-tab">
         
@@ -77,30 +84,6 @@
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
-    
-    <!-- *** SIGN IN POP UPS *** -->
-    <div data-role="popup" id="signin" data-overlay-theme="a" class="ui-content">
-			<form id="form-signin">
-			  <input type="text" placeholder="Username" name="username" required>
-			  <input type="password" placeholder="Password" name="password" required>
-			  <input type="submit" value="Sign in" data-theme="b">
-			</form>
-			<a href="#register-page">Register</a>
-      <h4 class="ui-icon-alert ui-btn-icon-left error">Invalid Credentials</h4>
-    </div>
-    <div data-role="popup" id="token-invalidated-popup" data-overlay-theme="a" class="ui-content">
-      <h3>Your session expired</h3>
-      <p>Please sign in again.</p>
-    </div>
-    <div data-role="popup" id="server-error-popup" data-overlay-theme="a" class="ui-content">
-      <h3>Error connecting to Server</h3>
-      <p>Check your internet connection.</p>
-    </div>
-    <div data-role="popup" id="signout" data-overlay-theme="a" class="ui-content">
-      <h3>Signed out</h3>
-      <p>Goodbye!</p>
-    </div>
-    
   </div>
 
   <!-- *** MOVIE PAGE *** -->
@@ -111,7 +94,7 @@
       <a href="#signout" class="signout-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="power">Sign out</a> 
       <a href="#signin" class="signin-popup-anchor ui-btn-right" data-rel="popup" data-transition="pop" data-position-to="window" data-icon="check">Sign in</a>
     </div>
-    
+  
     <div role="main" class="ui-content">
       <div class="ui-grid-a">
         <div class="ui-block-a center" id="movie-poster">
@@ -127,21 +110,49 @@
     <div data-role="footer">
       <h6>&copy;Van der Zijden Enterprises 2014</h6>
     </div>
-    
   </div>
 
-  <!-- *** REGISTER PAGE *** -->
-  <div data-role="page" id="register-page">
-    <div data-role="header">
-      <h1>Register</h1>
-    </div>
-    <div role="main">
-      <p>Main content</p>
-    </div>
-    <div data-role="footer">
-      <h6>&copy;Van der Zijden Enterprises 2014</h6>
-    </div>
-  </div>
+	<!-- *** GLOBAL POP UPS *** -->
+	<div data-role="popup" id="signin" data-overlay-theme="a" class="ui-content" data-theme="a">
+	  <div class="signin-section">
+		  <form id="form-signin">
+		    <input type="text" placeholder="Username" name="username" class="username" required>
+		    <input type="password" placeholder="Password" name="password" required>
+		    <input type="submit" value="Sign in" data-theme="b">
+		  </form>
+      <a class="toggle">Register</a>
+      <h4 class="ui-icon-alert ui-btn-icon-left error">Invalid Credentials</h4>
+	  </div>
+	  <div class="register-section">
+		  <form id="form-register">
+	      <input type="text" placeholder="Username" name="username" required>
+	      <input type="password" placeholder="Password" name="password" class="password" required>
+	      <input type="password" placeholder="Repeat Password" class="password-confirm" required>
+	      
+	      <input type="text" placeholder="First Name" name="firstName" required>
+	      <input type="text" placeholder="Name Prepositions" name="namePrepositions">
+	      <input type="text" placeholder="Last Name" name="lastName" required>
+	      <input type="submit" value="Register" data-theme="b">
+	    </form>
+      <a class="toggle">Sign in</a>
+      <h4 class="ui-icon-alert ui-btn-icon-left error">Registration failed. Try a different username.</h4>
+	  </div>
+	</div>
+	
+	<div data-role="popup" id="token-invalidated-popup" data-overlay-theme="a" class="ui-content" data-theme="a">
+	  <h3>Your session expired</h3>
+	  <p>Please sign in again.</p>
+	</div>
+	
+	<div data-role="popup" id="server-error-popup" data-overlay-theme="a" class="ui-content" data-theme="a">
+	  <h3>Error connecting to Server</h3>
+	  <p>Check your internet connection.</p>
+	</div>
+	
+	<div data-role="popup" id="signout" data-overlay-theme="a" class="ui-content" data-theme="a">
+	  <h3>Signed out</h3>
+	  <p>Goodbye!</p>
+	</div>
 
 </body>
 </html>

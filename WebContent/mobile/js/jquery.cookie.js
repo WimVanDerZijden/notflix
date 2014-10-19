@@ -16,7 +16,8 @@
 		// Browser globals
 		factory(jQuery);
 	}
-}(function ($) {
+}
+(function ($) {
 
 	var pluses = /\+/g;
 

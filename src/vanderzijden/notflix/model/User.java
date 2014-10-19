@@ -1,7 +1,6 @@
 package vanderzijden.notflix.model;
 
 import javax.ws.rs.WebApplicationException;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import vanderzijden.notflix.application.Log;

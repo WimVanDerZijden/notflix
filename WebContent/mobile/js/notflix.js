@@ -1,5 +1,4 @@
-//$(document).on("pageinit", "#home-page", function () {
-$(document).ready(function () {
+jQuery(document).ready(function ($) {
   "use strict";
   // MVC Revealing Module Pattern \\
   
@@ -32,14 +31,6 @@ $(document).ready(function () {
     
     function getMovies() {
       return movies;
-    }
-    
-    function getPage() {
-      return page;
-    }
-    
-    function getPageSize() {
-      return pageSize;
     }
     
     function getSize() {
@@ -111,11 +102,13 @@ $(document).ready(function () {
       movie = data;
     }
     
+    function isLoggedIn() {
+      return $.cookie("token") !== undefined;
+    }
+    
     return {
       setMovies: setMovies,
       getMovies: getMovies,
-      getPage: getPage,
-      getPageSize: getPageSize,
       getSize: getSize,
       getQuery: getQuery,
       setQuery: setQuery,
@@ -127,7 +120,8 @@ $(document).ready(function () {
       setPageSize: setPageSize,
       getPagingInfo: getPagingInfo,
       getMovie: getMovie,
-      setMovie: setMovie
+      setMovie: setMovie,
+      isLoggedIn: isLoggedIn
     };
     
   })();
@@ -138,11 +132,6 @@ $(document).ready(function () {
 
     var $movies = $("#listview-movies");
 	
-  	function moviesSetLoading() {
-  	  $movies.html("<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>");
-        $movies.listview("refresh");
-  	}
-  	
   	function loadMovies() {
   	  var data = model.getMovies();
   	  var html = "",
@@ -170,6 +159,10 @@ $(document).ready(function () {
       
   	  var html = '<li class="header">' + movie["title"] + '</li>'
       + '<li class="caption">' + movie["runtime"] +' min  -  ' + movie["genre"] +'  -  ' + getDate(movie["released"]) + ' (' + movie["country"] +')</li>'
+      + '<li id="star-li">'
+      + '<div id="star-widget"></div>'
+      + '<div id="rating-delete" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" data-inline="true" data-iconpos="notext" data-icon="delete" data-role="button" href="index.html" role="button">Delete</div>'
+      + '</li>'
       + '<li>' + movie["plot"] + '</li>'
       + '<li><b>Directed by:</b> ' + movie["director"] + '</li>'
       + '<li><b>Written by:</b> ' + movie["writer"] + '</li>'
@@ -181,11 +174,11 @@ $(document).ready(function () {
   	}
 
     function checkLoggedIn() {
-      if ($.cookie("token")) {
-        $(".signout-popup-anchor").show();
+      if (model.isLoggedIn()) {
+        $(".signout-popup-anchor, #star-li").show();
         $(".signin-popup-anchor").hide();
       } else {
-        $(".signout-popup-anchor").hide();
+        $(".signout-popup-anchor, #star-li").hide();
         $(".signin-popup-anchor").show();
       }
     }
@@ -203,7 +196,6 @@ $(document).ready(function () {
     }
 
   	return {
-  	  moviesSetLoading: moviesSetLoading,
   	  loadMovies: loadMovies,
   	  loadMovie: loadMovie,
   	  checkLoggedIn: checkLoggedIn
@@ -217,14 +209,16 @@ $(document).ready(function () {
 
     var minQueryLength = 0;
 
-    // *** AJAX ***
-    // Tell the server to feed us json
+    // *** AJAX *** \\
+    
+    /** Tell the server to feed us json */
     $.ajaxSetup({
       headers: { Accept: "application/json" }
     });
 
     // Set up a global error handler for ajax.
     $(document).ajaxError(function( event, jqxhr, settings, thrownError ) {
+      $.mobile.loading("hide");
       if (jqxhr.status == 401) {
         // This means our token was invalidated
         // Remove it and display a dialog.
@@ -236,15 +230,16 @@ $(document).ready(function () {
       }
     });
     
+    // *** General controller functions *** \\
+    
     function loadMovies () {
   	  var query = $("#movies-input").val().trim();
       if (query.length < minQueryLength) {
         model.clearMovies();
         view.loadMovies();
         $(".search-info").hide();
-      }
-      else {
-        view.moviesSetLoading();
+      } else {
+        $.mobile.loading("show");
         if (model.getQuery() !== query) {
           model.setQuery(query);
         }
@@ -254,8 +249,16 @@ $(document).ready(function () {
           url: "../resources/movie",
           data: model.getSearchParams(),
           success: function (data) {
-            model.setMovies(data);
-            view.loadMovies();
+            $.mobile.loading("hide");
+            if (data["movies"] === undefined) {
+              // Sometimes jackson will not work and return an empty object.
+              // Restarting the server 1 or more times usually solves this issue.
+              console.log("Jackson was not properly initialized. Server restart required.");
+              $('#server-error-popup').popup("open");
+            } else {
+              model.setMovies(data);
+              view.loadMovies();
+            }
           },
           error: function (data) {
             model.setQuery("");
@@ -264,22 +267,89 @@ $(document).ready(function () {
       }
     }
     
+    function initStarbox(imdbID, stars) {
+      new Starbox("star-widget", stars, {
+        rerate: true,
+        buttons: 10,
+        onRate: function (element, memo) {
+          submitRating(imdbID, memo.rated * 2, stars);
+        }
+      });
+      if (!model.isLoggedIn()) {
+        $("#star-li").hide();
+      }
+      if (model.getMovie()["rating"] > 0) {
+        $("#rating-delete").show();
+      } else {
+        $("#rating-delete").hide();
+      }
+    }
+    
     function loadMovie(imdbID) {
+      $.mobile.loading("show");
       localStorage.setItem("imdbID", imdbID);
       $.ajax({
         url: "../resources/movie/" + imdbID,
         success: function (data) {
+          $.mobile.loading("hide");
           model.setMovie(data);
           view.loadMovie();
+          // init the starbox widget
+          initStarbox(data["imdbID"], data["rating"] / 2);
+          $("#rating-delete").click(function () {
+            deleteRating();
+          });
         }
       });
     }
 
+    var submittingRating = false;
+    
+    /** Submit a rating */
+    function submitRating(imdbID, halfStars, oldHalfStars) {
+      if (submittingRating) {
+        return;
+      }
+      submittingRating = true;
+      $.mobile.loading("show");
+      var method = oldHalfStars > 0 ? "put" : "post";
+      $.ajax({
+        type: method,
+        url: "../resources/rating/" + imdbID,
+        data: { halfStars: halfStars },
+        success: function (data) {
+          $.mobile.loading("hide");
+          model.getMovie()["rating"] = data["halfStars"];
+          initStarbox(imdbID, model.getMovie()["rating"] / 2);
+          submittingRating = false;
+        },
+        error: function () {
+          initStarbox(imdbID, model.getMovie()["rating"] / 2);
+          submittingRating = false;
+        }
+      });
+    }
+    
+    /** Delete a rating */
+    function deleteRating() {
+      $.mobile.loading("show");
+      $.ajax({
+        type: "delete",
+        url: "../resources/rating/" + model.getMovie()["imdbID"],
+        success: function (data) {
+          $.mobile.loading("hide");
+          model.getMovie()["rating"] = 0;
+          initStarbox(model.getMovie()["imdbID"], 0);
+        }
+      });
+    }
+    
+    // *** Form submit listeners *** \\ 
+    
     /** Perform the login */
     $('#form-signin').submit(function (e) {
-      var $this = $(this);
-      e.preventDefault();
       $.mobile.loading("show")
+      e.preventDefault();
       $.ajax({
         type: "post",
         url: "../resources/session/login",
@@ -289,25 +359,39 @@ $(document).ready(function () {
           $('#signin').popup("close");        
           $.mobile.loading("hide");
           view.checkLoggedIn();
+          // Reload page because there may be user-specific data
+          loadPage($("body").pagecontainer("getActivePage").prop("id"), null);
         },
         error: function(data) {
-          $('#signin .error').show();
+          $('#signin .signin-section .error').show();
           $.mobile.loading("hide");   
         }
       });
     });
-
-    // *** Listeners *** \\\
     
-    /** Hide error message when sign-in popup is opened */
-    $('.signin-popup-anchor').click(function () {
-      $('#signin .error').hide();
+    /** Register new user */
+    $("#form-register").submit(function (e) {
+      e.preventDefault();
+      $.mobile.loading("show");
+      $.ajax({
+        type: "post",
+        url: "../resources/user",
+        data: $(this).serialize(),
+        success: function(data) {
+          $("#form-signin input[name=username]").val(data["username"]);
+          $("#form-signin input[name=password]").val("");
+          $("#signin .register-section").hide();
+          $("#signin .signin-section").show();
+          $.mobile.loading("hide");
+        },
+        error: function(data) {
+          $('#signin .register-section .error').show();
+          $.mobile.loading("hide");   
+        }
+      });
     });
     
-    $(".signout-popup-anchor").click(function () {
-      $.removeCookie("token", { path: "/"});
-      view.checkLoggedIn();
-    });
+    // *** Search movies listeners *** \\\
     
     $("#search-tab .next").click(function() {
       if (model.nextPage())
@@ -327,14 +411,34 @@ $(document).ready(function () {
       loadMovies();
     }, 500);
     
-    $("#sort-list").change(function() {
+    $("#sort-list, #limit-list").change(function() {
       loadMovies();
     });
     
-    $("#limit-list").change(function() {
-      loadMovies();
+    // *** Sign in / Register listeners *** \\
+    
+    /** Hide error message when sign-in popup is opened */
+    $('.signin-popup-anchor').click(function () {
+      $('#signin .error').hide();
+    });
+    
+    $(".signout-popup-anchor").click(function () {
+      $.removeCookie("token", { path: "/"});
+      view.checkLoggedIn();
     });
 
+    $("#signin .toggle").click(function () {
+      $("#signin .register-section").toggle();
+      $("#signin .signin-section").toggle();
+    });
+    
+    $("#form-register .password-confirm").on("input", function () {
+      if ($("#form-register .password").val() !== $(this).val()) {
+        this.setCustomValidity('Passwords must match.');
+      } else {
+        this.setCustomValidity('');
+      }
+    });
     
     // *** INIT *** \\
     
@@ -362,6 +466,10 @@ $(document).ready(function () {
     $("body").on("pagecontainerbeforetransition", function(event, data) {
       loadPage(data.toPage[0].id, data);
     });
+    
+    $("#signin, #signout, #token-invalidated-popup, #server-error-popup").enhanceWithin().popup();
+    
+    $("#signin .register-section").hide();
     
   })();
 

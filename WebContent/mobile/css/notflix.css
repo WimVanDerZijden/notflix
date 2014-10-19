@@ -50,6 +50,16 @@ img {
 	float: left;
 }
 
+#movie-detail .ui-icon-delete {
+  position: absolute;
+  top: 0;
+  right: 1em;
+}
+
+#star-li {
+	height: 27px;
+}
+
 /** JQM Tutorial advices em units for breakpoint */
 @media all and (max-width: 35em) {
 	.ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b {
