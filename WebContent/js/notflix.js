@@ -17,6 +17,8 @@
     
     var loadMovies = function() {
       $scope.searching = true;
+      $scope.size = 0;
+      $scope.movies = [];
       $http.get('resources/movie',
           { params: $scope.params, cache: true } )
       .success(function(data) {

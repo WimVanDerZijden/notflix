@@ -28,14 +28,14 @@
           <option value="ReleasedDesc">Newer first</option>
           <option value="ReleasedAsc">Older first</option>
         </select>
-				<select ng-model="params.pageSize" ng-change="firstPage()">
-				  <option value="10">10 results</option>
-				  <option value="20">20 results</option>
-				  <option value="50">50 results</option>
-				  <option value="100">100 results</option>
-				</select>
+        <select ng-model="params.pageSize" ng-change="firstPage()">
+          <option value="10">10 results</option>
+          <option value="20">20 results</option>
+          <option value="50">50 results</option>
+          <option value="100">100 results</option>
+        </select>
       </form>
-      <div class="search-results" ng-hide="searching" ng-animate="{show:'animate-show', hide:'animate-hide'}">
+      <div class="search-results" ng-hide="searching">
 	      <h2>{{size}} results {{ pageInfo() }}</h2>
 	      <ul>
 	        <li ng-repeat="movie in movies" ng-click="movieDetail()">

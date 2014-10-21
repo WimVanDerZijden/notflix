@@ -20,6 +20,9 @@ import vanderzijden.notflix.model.User;
  */
 public abstract class BaseResource {
 
+	/** Set a connection delay in ms for testing purposes */
+	private static int CONNECTION_DELAY = 0;
+	
 	@Context
 	private ServletContext ctx;
 	
@@ -35,13 +38,13 @@ public abstract class BaseResource {
 	 * @return
 	 */
 	protected Model getModel() {
-		/* Uncomment to simulate slow connection*/
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}/**/
+		if (CONNECTION_DELAY > 0) {
+			try {
+				Thread.sleep(CONNECTION_DELAY);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		return (Model) ctx.getAttribute("model");
 	}
 	

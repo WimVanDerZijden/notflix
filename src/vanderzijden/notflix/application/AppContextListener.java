@@ -33,6 +33,12 @@ import com.google.gson.Gson;
 @WebListener
 public class AppContextListener implements ServletContextListener {
 
+	/** Set to true to reload the model (loosing all user data).
+	 * As long as this property is true, all user data will be lost on a server restart
+	 * 
+	 */
+	private static final boolean RELOAD_MODEL = false;
+	
 	private static final String MODEL_SAVE_FILE = "model_save_file.json";
 	/**
 	 *  Requested 729,513 movies via omdb-api.
@@ -41,7 +47,7 @@ public class AppContextListener implements ServletContextListener {
 	 *  No poster: 497,700
 	 *  Other: 166
 	 */
-	private static final String MOVIES_JSON = "movies.json";
+	private static final String MOVIES_JSON = "movies-top5000.json";
 	
 	private ServletContext ctx;
 	
@@ -64,7 +70,7 @@ public class AppContextListener implements ServletContextListener {
 				scanner.close();
 		}
 		// Failed to load model: create new model
-		if (model == null) {
+		if (model == null || RELOAD_MODEL) {
 			model = new Model();
 			loadTestData(model);
 		}
