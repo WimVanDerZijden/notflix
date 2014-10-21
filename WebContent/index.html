@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="notflix">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notflix Desktop</title>
+
+  <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="css/bootstrap-theme.min.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> 
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript" src="js/notflix.js"></script>
+  
+</head>
+<body>
+
+  <div class="row">
+    <div class="col-xs-12" ng-controller="SearchMoviesCtrl">
+      <form novalidate>
+	      <input ng-model="params.q" ng-change="firstPage()" ng-model-options="{ debounce: 200 }" type="text" placeholder="Search movie">
+        <select ng-model="params.sort" ng-change="firstPage()">
+          <option value="TitleAsc">Title (A-Z)</option>
+          <option value="TitleDesc">Title (Z-A)</option>
+          <option value="ImdbRatingDesc">IMDb Rating</option>
+          <option value="ImdbVotesDesc">IMDb Votes</option>
+          <option value="ReleasedDesc">Newer first</option>
+          <option value="ReleasedAsc">Older first</option>
+        </select>
+				<select ng-model="params.pageSize" ng-change="firstPage()">
+				  <option value="10">10 results</option>
+				  <option value="20">20 results</option>
+				  <option value="50">50 results</option>
+				  <option value="100">100 results</option>
+				</select>
+      </form>
+      <div class="search-results" ng-hide="searching" ng-animate="{show:'animate-show', hide:'animate-hide'}">
+	      <h2>{{size}} results {{ pageInfo() }}</h2>
+	      <ul>
+	        <li ng-repeat="movie in movies" ng-click="movieDetail()">
+	          {{movie.title}}
+	        </li>
+	      </ul>
+        <button ng-click="prevPage()">Previous</button>
+        <button ng-click="nextPage()">Next</button>
+        <div ng-show="error" class="error">Unable to connect to server.</div>
+      </div>
+      <div class="searching" ng-show="searching">
+        Searching...
+      </div>
+    </div>
+  </div>
+</body>
+</html>

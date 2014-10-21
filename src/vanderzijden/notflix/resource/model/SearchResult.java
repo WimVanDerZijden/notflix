@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Link;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import vanderzijden.notflix.application.Log;
@@ -18,6 +19,8 @@ public class SearchResult {
 	private int size;
 	
 	private ArrayList<UserMovie> movies = new ArrayList<>();
+	
+	private ArrayList<Link> link = new ArrayList<Link>();
 	
 	public SearchResult(List<Movie> all_movies, User user, int page, int pageSize) {
 		List<Movie> moviesPage = getSubList(all_movies, page, pageSize);
@@ -61,6 +64,20 @@ public class SearchResult {
 
 	public void setMovies(ArrayList<UserMovie> movies) {
 		this.movies = movies;
+	}
+
+	public void addLink(Link link) {
+		if (link != null) {
+			this.link.add(link);
+		}
+	}
+
+	public ArrayList<Link> getLink() {
+		return link;
+	}
+
+	public void setLink(ArrayList<Link> link) {
+		this.link = link;
 	}
 	
 	

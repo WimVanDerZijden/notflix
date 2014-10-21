@@ -8,7 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import vanderzijden.notflix.model.Movie;
 import vanderzijden.notflix.model.User;
@@ -20,6 +23,9 @@ import vanderzijden.notflix.resource.model.UserMovie;
 @Path("movie")
 public class MovieResource extends BaseResource {
 
+	@Context
+	UriInfo ui;
+	
 	@GET
 	@Path("{imdb_tt: tt\\d+}")	//	base_url/resources/movies/imdb_tt12345
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
@@ -41,7 +47,24 @@ public class MovieResource extends BaseResource {
 		User user = getUserOpt();
 		List<Movie> movies = getModel().searchMovies(q);
 		MovieSort.sort(movies, sort);
-		return new SearchResult(movies, user, page, pageSize);
+		SearchResult searchResult = new SearchResult(movies, user, page, pageSize);
+		searchResult.addLink(getLink("prev", q, sort.toString(), page - 1, pageSize, searchResult.getSize()));
+		searchResult.addLink(getLink("next", q, sort.toString(), page + 1, pageSize, searchResult.getSize()));
+		return searchResult;
 	}
 
+	private Link getLink(String rel, String q, String sort, Integer page, Integer pageSize, int size) {
+		// No link if page is out of scope
+		if (page < 0 || page > (size - 1) / pageSize) {
+			return null;
+		}
+		return Link.fromUri(ui.getAbsolutePath())
+				.param("q",q)
+				.param("sort", sort)
+				.param("page", "" + page)
+				.param("pageSize", "" + pageSize)
+				.rel(rel)
+				.build();
+	}
+	
 }
