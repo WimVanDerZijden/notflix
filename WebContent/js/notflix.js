@@ -1,6 +1,34 @@
 (function () {
   
-  var notflix = angular.module('notflix', []);
+  var notflix = angular.module('notflix', ['ngRoute']);
+  
+  notflix.config(['$routeProvider',
+    function($routeProvider) {
+	  $routeProvider
+	    .when('/movie', {
+		  templateUrl: 'partials/movie-search.html',
+          controller: 'SearchMoviesCtrl'
+        })
+        .when('/movie/:imdbId', {
+          templateUrl: 'partials/movie-detail.html',
+          controller: 'MovieDetailCtrl'
+        })
+        .otherwise({
+          redirectTo: '/movie'
+        });
+	}]);
+  
+  notflix.controller('MainCtrl', ['$scope', function($scope) {
+	$scope.pagetitle = "Notflix";
+  }]);
+    
+  notflix.controller('MovieDetailCtrl', ['$scope', '$routeParams', '$http',
+    function($scope, $routeParams, $http) {
+	  $http.get('resources/movie/' + $routeParams.imdbId, { cache: true })
+	  .success(function(data) {
+		$scope.movie = data;
+	  });
+  }]);
   
   notflix.controller('SearchMoviesCtrl', [ '$http', '$scope', function($http, $scope) {
     $scope.size = 0;
@@ -69,17 +97,5 @@
     // Load on initialization
     loadMovies();
   }]);
-  
-
-  
-  /*
-  notflix.directive('notflixSearchQuery', function() {
-    return function (scope, element, attrs) {
-      element.bind("input", function() {
-        scope.loadMovies();
-      });
-    };
-  });
-  */
 
 })();
