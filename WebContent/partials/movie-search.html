@@ -1,7 +1,10 @@
 <div class="col-xs-12">
-  <form novalidate>
+  <form novalidate role="form">
+   <span class="glyphicon glyphicon-search"></span>
    <input ng-model="params.q" ng-change="firstPage()" ng-model-options="{ debounce: 200 }" type="text" placeholder="Search movie">
-    <select ng-model="params.sort" ng-change="firstPage()">
+   <div class="dropdown">
+  </div>
+    <select ng-model="params.sort" ng-change="firstPage()" class="form-control">
       <option value="TitleAsc">Title (A-Z)</option>
       <option value="TitleDesc">Title (Z-A)</option>
       <option value="ImdbRatingDesc">IMDb Rating</option>
@@ -16,7 +19,7 @@
       <option value="100">100 results</option>
     </select>
   </form>
-  <div class="search-results" ng-hide="searching">
+  <div class="search-results" ng-hide="searching || error">
    <h2>{{size}} results {{ pageInfo() }}</h2>
    <ul>
      <li ng-repeat="movie in movies">
@@ -25,9 +28,11 @@
    </ul>
     <button ng-click="prevPage()">Previous</button>
     <button ng-click="nextPage()">Next</button>
-    <div ng-show="error" class="error">Unable to connect to server.</div>
   </div>
   <div class="searching" ng-show="searching">
     Searching...
   </div>
+  <div ng-show="error" class="error">
+    Unable to connect to server.
+   </div>
 </div>
