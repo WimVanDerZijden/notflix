@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notflix Desktop</title>
+  <title>Notflix: your online movie rating site</title>
 
   <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -12,15 +12,23 @@
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/angular.min.js"></script>
   <script type="text/javascript" src="js/angular-route.min.js"></script>
+  <script type="text/javascript" src="js/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="js/angularLocalStorage.js"></script>
   <script type="text/javascript" src="js/notflix.js"></script>
-  
+  <link type="text/css" rel="stylesheet" href="css/notflix.css">
+
 </head>
 <body ng-controller="MainCtrl">
-  <header>
-    <h1>{{pagetitle}}</h1>
-  </header>
-  <div ng-view class="row">
-  	<!-- The partial is loaded here -->
+  <div class="container">
+    <header class="page-header">
+      <h1>Notflix <small>your online movie rating site</small></h1>
+    </header>
+    <div ng-view class="row">
+      <!-- The partial is loaded here -->
+    </div>
   </div>
+  <footer class="page-footer">
+    <h3><small>&copy; 2014 Van der Zijden Enterprises</small></h3>
+  </footer>
 </body>
 </html>

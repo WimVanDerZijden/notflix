@@ -1,0 +1,74 @@
+/* Rules for search-result thumbnails
+   We abuse the fact that padding is always
+   calculated as a function of the width.
+   
+   padding-bottom = width * 3 / 4
+ */
+
+.search-results .thumb {
+  position: relative;
+  padding-bottom: 44.44444444%;
+  height: 0;
+}
+
+@media (min-width: 768px) {
+  .search-results .thumb.col-sm-3 {
+    padding-bottom: 33.33333333%;
+  }
+}
+
+@media (min-width: 992px) {
+  .search-results .thumb.col-md-2 {
+    padding-bottom: 22.22222222%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .search-results .thumb.col-lg-1 {
+    padding-bottom: 11.11111111%; 
+  }
+}
+
+/* Rules for search result detail */
+
+.search-results .detail {
+  margin-bottom: 15px;
+}
+
+.search-results .detail-info:hover {
+  background-color: #CCD;
+}
+
+.search-results .detail-info {
+  height: 104px;
+  overflow: hidden;
+  background-color: #DFDFFF;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.search-results .detail-info img {
+  position: absolute;
+  max-height: 100%;
+  max-width: 78px;
+  margin-left: 15px;
+}
+
+.search-results .detail-info p, .search-results .detail-info h4 {
+  margin-left: 100px;
+  overflow: hidden;
+}
+
+
+.search-results .detail-info h4 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #BBB;
+}
+
+
+/* Page footer */
+
+.page-footer {
+  text-align: center;
+}

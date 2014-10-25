@@ -1,25 +1,23 @@
 (function () {
   
-  var notflix = angular.module('notflix', ['ngRoute']);
+  var notflix = angular.module('notflix', ['ngRoute','angularLocalStorage']);
   
   notflix.config(['$routeProvider',
     function($routeProvider) {
 	  $routeProvider
 	    .when('/movie', {
-		  templateUrl: 'partials/movie-search.html',
-          controller: 'SearchMoviesCtrl'
-        })
-        .when('/movie/:imdbId', {
-          templateUrl: 'partials/movie-detail.html',
-          controller: 'MovieDetailCtrl'
-        })
-        .otherwise({
-          redirectTo: '/movie'
-        });
+	      templateUrl: 'partials/movie-search.html'
+      })
+      .when('/movie/:imdbId', {
+        templateUrl: 'partials/movie-detail.html'
+      })
+      .otherwise({
+        redirectTo: '/movie'
+      });
 	}]);
   
   notflix.controller('MainCtrl', ['$scope', function($scope) {
-	$scope.pagetitle = "Notflix";
+    $scope.pagetitle = "Notflix";
   }]);
     
   notflix.controller('MovieDetailCtrl', ['$scope', '$routeParams', '$http',
@@ -30,18 +28,37 @@
 	  });
   }]);
   
-  notflix.controller('SearchMoviesCtrl', [ '$http', '$scope', function($http, $scope) {
+  notflix.controller('SearchMoviesCtrl', [ '$http', '$scope', '$location', 'storage', function($http, $scope, $location, storage) {
     $scope.size = 0;
     $scope.movies = [];
     $scope.error = false;
     $scope.searching = false;
+    $scope.displayModus = 'detail';
     
-    $scope.params = {
+    // The default page size is dependent on screen width
+    var defaultPageSize;
+    var width = $(window).width();
+    if (width < 992)
+      defaultPageSize = 12;
+    else if (width < 1200)
+      defaultPageSize = 24;
+    else
+      defaultPageSize = 48;
+    
+    /* This creates a 2-way binding between localStorage.searchMoviesParams and $scope.params */
+    storage.bind($scope,'params', {
+      defaultValue: {
         q: '',
-        sort: 'TitleAsc',
+        sort: 'ImdbVotesDesc',
         page: 0,
-        pageSize: 10
-    };
+        pageSize: defaultPageSize
+      },
+      storeName: 'searchMoviesParams'
+    });
+    /* Also bind the displayModus */
+    storage.bind($scope,'displayModus', {
+      defaultValue: 'thumb', storeName: 'searchMoviesDisplayModus'
+    });
     
     var loadMovies = function() {
       $scope.searching = true;
@@ -62,14 +79,26 @@
       });
     };
     
+    $scope.go = function (path) {
+      $location.path('/movie/' + path);
+    };
+    
+    var getLastPage = function() {
+      return Math.ceil($scope.size / $scope.params.pageSize) - 1;
+    }
+    
     $scope.firstPage = function() {
       $scope.params.page = 0;
       loadMovies();
     };
     
+    $scope.lastPage = function() {
+      $scope.params.page = getLastPage();
+      loadMovies();
+    }
+    
     $scope.nextPage = function() {
-      var maxPage = Math.ceil($scope.size / $scope.params.pageSize) - 1;
-      if ($scope.params.page < maxPage) {
+      if ($scope.params.page < getLastPage()) {
         $scope.params.page += 1;
         loadMovies();
       }
