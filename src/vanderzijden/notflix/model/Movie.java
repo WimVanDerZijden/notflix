@@ -45,7 +45,7 @@ public class Movie {
 	private String awards;
 	private URI poster;
 	private int imdbVotes;
-	private double imdbRating; 
+	private double imdbRating;
 	protected Map<String,Rating> ratings = new HashMap<>();
 
 	/**

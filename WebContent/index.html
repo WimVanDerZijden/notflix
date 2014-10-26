@@ -8,20 +8,34 @@
 
   <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="css/bootstrap-theme.min.css">
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> 
+  <link type="text/css" rel="stylesheet" href="css/starbox.css">
+  <link type="text/css" rel="stylesheet" href="css/notflix.css">
+  
+  <script src='//ajax.googleapis.com/ajax/libs/prototype/1/prototype.js'></script>
+  <script src='//ajax.googleapis.com/ajax/libs/scriptaculous/1/scriptaculous.js'></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript">jQuery.noConflict();</script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/angular.min.js"></script>
   <script type="text/javascript" src="js/angular-route.min.js"></script>
   <script type="text/javascript" src="js/angular-cookies.min.js"></script>
   <script type="text/javascript" src="js/angularLocalStorage.js"></script>
+  
+  <script type="text/javascript" src="js/starbox.js"></script>
   <script type="text/javascript" src="js/notflix.js"></script>
-  <link type="text/css" rel="stylesheet" href="css/notflix.css">
 
 </head>
 <body ng-controller="MainCtrl">
   <div class="container">
-    <header class="page-header">
-      <h1>Notflix <small>your online movie rating site</small></h1>
+    <header class="row page-header">
+      
+      <div class="col-xs-10 col-md-11">
+        <h1>Notflix <small>your online movie rating site</small></h1>
+      </div>
+      <div class="col-xs-2 col-md-1">
+        <button class="form-control header-btn btn btn-default" ng-hide="signedIn()" data-toggle="modal" data-target="#signin"><span class="glyphicon glyphicon-log-in"></span></button>
+        <button class="form-control header-btn btn btn-primary" ng-show="signedIn()" ng-click="signOut()"><span class="glyphicon glyphicon-log-out"></span></button>
+      </div>
     </header>
     <div ng-view class="row">
       <!-- The partial is loaded here -->
@@ -30,5 +44,34 @@
   <footer class="page-footer">
     <h3><small>&copy; 2014 Van der Zijden Enterprises</small></h3>
   </footer>
+  <!-- Login pop up -->
+  <div class="modal fade" id="signin" ng-controller="SignInCtrl">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title">Sign in</h4>
+	      </div>
+        <form id="form-signin" name="form" novalidate method="post">
+		      <div class="modal-body">
+						<div class="form-group">
+							<input type="text" ng-model="params.username" placeholder="Username" name="username" class="form-control" required autocomplete="off">
+						</div>
+						<div class="form-group">
+						  <input type="password" ng-model="params.password" placeholder="Password" name="password" class="form-control" required autocomplete="off">
+						</div>
+						<label><input type="checkbox" ng-model="rememberMe"> Remember me</label>
+				  </div>
+		      <div class="modal-footer" ng-hide="inProgress">
+		        <div class="form-group">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Register</button>
+		          <button type="submit" class="btn btn-primary" ng-click="signIn()" ng-disabled="form.$invalid" data-loading-text="Signing in" id="sign-in-btn">Sign in</button>
+		        </div>
+		        <div role="alert" class="alert alert-danger fade in" ng-show="invalidUserPass"><strong>Invalid username or passsword</strong></div>
+		      </div>
+        </form>
+	    </div>
+	  </div>
+  </div>
 </body>
 </html>

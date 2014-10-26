@@ -23,12 +23,12 @@
     </div>
     <div class="form-group col-sm-4 col-xs-12">
       <select class="form-control" ng-model="displayModus">
-        <option value="thumb">Show Thumbnails</option>
+        <option value="thumb">Show Posters</option>
         <option value="detail">Show Detail</option>
       </select>
     </div>
   </form>
-  <div class="search-results" ng-hide="searching || error">
+  <div class="search-results" ng-hide="userMessage">
     <p>{{size}} results {{ pageInfo() }}</p>
     <div class="row">
       <div class="col-xs-4 col-sm-3 col-md-2 col-lg-1 thumb" ng-repeat="movie in movies" ng-show="displayModus == 'thumb'">
@@ -46,23 +46,20 @@
     </div>
     <div class="row">
       <div class="col-xs-3">
-        <button ng-click="firstPage()" class="form-control col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button ng-click="firstPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></button>
       </div>
       <div class="col-xs-3">
-        <button ng-click="prevPage()" class="form-control col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button ng-click="prevPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span></button>
       </div>
       <div class="col-xs-3">
-        <button ng-click="nextPage()" class="form-control col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button ng-click="nextPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span></button>
       </div>
       <div class="col-xs-3">
-        <button ng-click="lastPage()" class="form-control col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button ng-click="lastPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></button>
       </div>
     </div>
-    <div ng-show="searching">
-      Searching...
-    </div>
-    <div ng-show="error">
-      Unable to connect to server.
-    </div>
+  </div>
+  <div ng-show="userMessage">
+    <p>{{userMessage}}</p>
   </div>
 </div>

@@ -6,6 +6,8 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEvent.Type;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 /**
+ * TODO delete this because it doesn't work
+ * 
  * There is a jersey bug that causes some exception to be "eaten".
  * I.e., a server error occurs, but no stacktrace is show in the console.
  * 
