@@ -11,16 +11,16 @@
       
 	    $routeProvider
 	    .when('/movie/', {
-	      template: '<search-results></search-results>',
+	      templateUrl: 'partials/search-results.html',
 	      controller: 'SearchMoviesCtrl'
+      })
+      .when('/user', {
+        templateUrl: 'partials/search-results.html',
+        controller: 'SearchUsersCtrl'
       })
       .when('/movie/:imdbId', {
         templateUrl: 'partials/movie-detail.html',
         controller: 'MovieDetailCtrl'
-      })
-      .when('/user', {
-        template: '<search-results></search-results>',
-        controller: 'SearchUsersCtrl'
       })
       .when('/', {
         redirectTo: '/movie'
@@ -60,6 +60,28 @@
       /*$http.defaults.headers.delete = { 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8;'};*/
   }]);
   
+  notflix.directive('movieResults', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'partials/movie-results.html'
+    };
+  });
+
+  notflix.directive('userResults', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'partials/user-results.html'
+    };
+  });
+
+  notflix.directive('loginModal', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'partials/login-modal.html',
+      controller: 'SignInCtrl'
+    }
+  });
+  
   notflix.controller('MainCtrl', ['$scope','$cookies',
     function($scope, $cookies) {
       console.log("Controller MainCtrl init");
@@ -68,34 +90,11 @@
       };
   }]);
 
-  notflix.directive('searchResults', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'partials/search-results.html',
-      controller: 'SearchResultsCtrl'
-    };
-  });
-  
-  notflix.directive('resultsView', function() {
-    function getTemplateUrl(type) {
-      if (type === 'searchMovies') {
-        return 'partials/movie-results.html'
-      }
-      else if (type === 'searchUsers') {
-        return 'partials/user-results.html';
-      }
-    }
-    return {
-      restrict: 'E',
-      templateUrl: function(element, attr) {
-        return getTemplateUrl(attr.ctxName);
-      }
-    };
-  });
-  
-  /* This sets the movies ctx for the generic SearchResultsCtrl */
-  notflix.controller('SearchMoviesCtrl', ['$scope',
-    function($scope) {
+  notflix.controller('SearchMoviesCtrl', ['$scope','$controller',
+    function($scope,$controller) {
+      // This defines SearchResultsCtrl as a parent controller
+      // Reference: http://stackoverflow.com/a/20230720/2947592
+      $controller('SearchResultsCtrl',{$scope: $scope});
       console.log("Controller SearchMoviesCtrl init");
       $scope.ctx = {
         defaultSort: 'ImdbVotesDesc',
@@ -117,11 +116,15 @@
           ['detail','Show Detail']
         ]
       }
+      // Init the parent controller
+      $scope.init();
   }]);
   
-  /* This sets the users ctx for the generic SearchResultsCtrl */
-  notflix.controller('SearchUsersCtrl', ['$scope',
-    function($scope) {
+  notflix.controller('SearchUsersCtrl', ['$scope','$controller',
+    function($scope,$controller) {
+      // This defines SearchResultsCtrl as a parent controller
+      // Reference: http://stackoverflow.com/a/20230720/2947592
+      $controller('SearchResultsCtrl',{$scope: $scope});
       console.log("Controller SearchUsersCtrl init");
       $scope.ctx = {
         defaultSort: 'NameAsc',
@@ -137,7 +140,9 @@
         displayModes: [
           ['detail','Show Detail']
         ]
-      }
+      };
+      // Init the parent controller
+      $scope.init();
   }]);
 
   notflix.controller('SearchResultsCtrl', [ '$http', '$scope', '$location', 'storage','$cacheFactory',
@@ -157,15 +162,7 @@
          defaultPageSize = 24;
        else
          defaultPageSize = 48;
-       
-       /* This creates a 2-way binding between localStorage and $scope.params */
-       storage.bind($scope,'params', {
-         defaultValue: { q: '', sort: $scope.ctx.defaultSort, page: 0, pageSize: defaultPageSize },
-         storeName: $scope.ctx.name + '_Params'
-       });
-       /* Also bind the displayModus */
-       storage.bind($scope,'displayModus', { defaultValue: 'detail', storeName: $scope.ctx.name + '_DisplayModus' });
-       
+
        var loadResults = function() {
          $scope.userMessage = 'Searching...';
          $scope.size = 0;
@@ -233,8 +230,18 @@
          return "(showing " + start + " - " + end + ")";
        };
        
-       // Load on initialization
-       loadResults();
+       // Initialization code that has to be run from the child implementation:
+       $scope.init = function() {
+         /* This creates a 2-way binding between localStorage and $scope.params */
+         storage.bind($scope,'params', {
+           defaultValue: { q: '', sort: $scope.ctx.defaultSort, page: 0, pageSize: defaultPageSize },
+           storeName: $scope.ctx.name + '_Params'
+         });
+         /* Also bind the displayModus */
+         storage.bind($scope,'displayModus', { defaultValue: 'detail', storeName: $scope.ctx.name + '_DisplayModus' });
+         // Initial load
+         loadResults();
+       }
 
   }]);
 
@@ -427,9 +434,14 @@
         });
       };
       
-      $scope.escapeRegExp = function(str) {
+      var escapeRegExp = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
       }
+      
+      $scope.repeatPasswordPattern = function() {
+        // To "abuse" the pattern attribute: the regex to match the string exactly.
+        return '^' + escapeRegExp($scope.regParams.password) + '$';
+      };
   }]);
   
 })();

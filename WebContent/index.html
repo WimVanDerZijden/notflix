@@ -44,70 +44,8 @@
   <footer class="page-footer">
     <h3><small>&copy; 2014 Van der Zijden Enterprises</small></h3>
   </footer>
-  <!-- Login/Registration pop up -->
-  <div class="modal fade" id="signin" ng-controller="SignInCtrl">
-	  <div class="modal-dialog">
-	    <div class="modal-content" ng-show="toggle">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title">Sign in</h4>
-	      </div>
-        <form id="form-signin" name="loginform" novalidate method="post">
-		      <div class="modal-body">
-						<div class="form-group">
-							<input type="text" ng-model="params.username" placeholder="Username" name="username" class="form-control" required autocomplete="off">
-						</div>
-						<div class="form-group">
-						  <input type="password" ng-model="params.password" placeholder="Password" name="password" class="form-control" required autocomplete="off">
-						</div>
-						<label><input type="checkbox" ng-model="rememberMe"> Remember me</label>
-				  </div>
-		      <div class="modal-footer" ng-hide="inProgress">
-		        <div class="form-group">
-		          <button type="button" class="btn btn-default" ng-click="toggle = !toggle">Register</button>
-		          <button type="submit" class="btn btn-primary" ng-click="signIn()" ng-disabled="loginform.$invalid" data-loading-text="Signing in" id="sign-in-btn">Sign in</button>
-		        </div>
-		        <div role="alert" class="alert alert-danger fade in" ng-show="invalidUserPass"><strong>Invalid username or passsword</strong></div>
-		      </div>
-        </form>
-	    </div>
-      <div class="modal-content" ng-hide="toggle">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h4 class="modal-title">Sign in</h4>
-        </div>
-        <form id="form-register" name="form" novalidate method="post">
-          <div class="modal-body">
-            <div class="form-group">
-              <input type="text" ng-model="regParams.username" placeholder="Username" name="username" class="form-control" required autocomplete="off">
-            </div>
-            <div class="form-group">
-              <input type="text" ng-model="regParams.firstName" placeholder="First name" name="firstName" class="form-control" required autocomplete="off">
-            </div>
-            <div class="form-group">
-              <input type="text" ng-model="regParams.namePrepositions" placeholder="Name Prepositions" name="namePrepositions" class="form-control" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <input type="text" ng-model="regParams.lastName" placeholder="Last name" name="lastName" class="form-control" required autocomplete="off">
-            </div>
-            <div class="form-group">
-              <input type="password" ng-model="regParams.password" placeholder="Password" name="password" class="form-control" required autocomplete="off">
-            </div>
-            <div class="form-group">
-              <input type="password" ng-model="regParams.passwordRepeat" pattern="{{escapeRegExp(regParams.password)}}" placeholder="Repeat Password" name="password" class="form-control" required autocomplete="off">
-            </div>
-            <label><input type="checkbox" ng-model="acceptConditions" required> I accept the conditions</label>
-          </div>
-          <div class="modal-footer" ng-hide="inProgress">
-            <div class="form-group">
-              <button type="button" class="btn btn-default" ng-click="toggle = !toggle">Sign in</button>
-              <button type="submit" class="btn btn-primary" ng-click="register()" ng-disabled="form.$invalid" data-loading-text="Registering" id="register-btn">Register</button>
-            </div>
-            <div role="alert" class="alert alert-danger fade in" ng-show="invalidRegister"><strong>Registration failed. Try a different username</strong></div>
-          </div>
-        </form>
-      </div>
-	  </div>
-  </div>
+  <login-modal>
+    <!-- Login/Registration pop up -->
+  </login-modal>
 </body>
 </html>

@@ -30,10 +30,10 @@
   </form>
   <div class="search-results" ng-hide="userMessage">
     <p>{{size}} results {{ pageInfo() }}</p>
-    <results-view class="row" data-ctx-name="searchMovies" ng-show="{{ctx.name == 'searchMovies'}}">
-    </results-view>
-    <results-view class="row" data-ctx-name="searchUsers" ng-show="{{ctx.name == 'searchUsers'}}">
-    </results-view>
+    <user-results class="row" ng-show="ctx.name == 'searchUsers'">
+    </user-results>
+    <movie-results class="row" ng-show="ctx.name == 'searchMovies'">
+    </movie-results>
     <div class="row">
       <div class="col-xs-3">
         <button ng-click="firstPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></button>
