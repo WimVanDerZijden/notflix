@@ -1,0 +1,7 @@
+<div class="col-xs-12 col-md-6 col-lg-4 detail" ng-repeat="user in results">
+  <div class="detail-info">
+    <img class="img-responsive img-rounded" src="media/no-profile-photo.jpg" alt="{{user.username}}">
+    <h4>{{user.username}}</h4>
+    <p>{{user.firstName}}<span ng-show="user.namePrepositions"> {{user.namePrepositions}}</span> {{user.lastName}}</p>
+  </div>
+</div>

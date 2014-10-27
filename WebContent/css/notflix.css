@@ -111,5 +111,14 @@
 }
 
 #star-widget {
-	height: 27px;
+	height: 38px;
+}
+
+.star-widget {
+	font-size: 10px;
+}
+
+/* Forms: placeholders look too much like input */
+input.form-control {
+	color: black;
 }

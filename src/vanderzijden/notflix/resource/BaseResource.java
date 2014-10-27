@@ -21,7 +21,7 @@ import vanderzijden.notflix.model.User;
 public abstract class BaseResource {
 
 	/** Set a connection delay in ms for testing purposes */
-	private static int CONNECTION_DELAY = 1000;
+	private static int CONNECTION_DELAY = 0;
 	
 	@Context
 	private ServletContext ctx;

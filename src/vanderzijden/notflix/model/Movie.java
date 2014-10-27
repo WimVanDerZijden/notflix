@@ -147,9 +147,9 @@ public class Movie {
 	}
 	
 	@XmlElement
-	public Double getAvgRating() {
+	public double getAvgRating() {
 		if (ratings.size() == 0)
-			return null;
+			return 0;
 		double sum = 0;
 		for (String username : ratings.keySet()) {
 			sum += ratings.get(username).getHalfStars();

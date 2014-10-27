@@ -12,7 +12,7 @@ var Starboxes = {
   options: {
     buttons: 5,                                  // amount of clickable areas
     className : 'default',                       // default class
-    color: 'gold',                                // would overwrite the css style to set color on the stars
+    color: false,                                // would overwrite the css style to set color on the stars
     duration: 0.6,                               // the duration of the revert effect, when effects are used
     effect: {
       mouseover: false,                          // use effects on mouseover, default false

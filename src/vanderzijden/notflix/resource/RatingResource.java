@@ -65,7 +65,6 @@ public class RatingResource extends BaseResource {
 	public Rating deleteRating(
 			@PathParam("imdb_tt") String imdb_tt)
 	{
-		System.out.println("DLT");
 		User user = getUser();
 		Movie movie = getModel().getMovie(imdb_tt);
 		return movie.deleteRating(user);

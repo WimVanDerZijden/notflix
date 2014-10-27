@@ -22,14 +22,6 @@ public class Model {
 
 	// *** GET ***
 	
-	public List<User> getUsers() {
-		List<User> result = new ArrayList<>();
-		for (String username : users.keySet()) {
-			result.add(users.get(username));
-		}
-		return result;
-	}
-	
 	public User getUser(String username) {
 		User user = users.get(username);
 		if (user == null) {
@@ -137,6 +129,28 @@ public class Model {
 	 */
 	public List<Movie> searchAllMovies() {
 		return new ArrayList<>(movies.values());
+	}
+	
+	public List<User> searchAllUsers() {
+		return new ArrayList<>(users.values());
+	}
+	
+	public List<User> searchUsers(String q)
+	{
+		if (q == null || q.equals("")) {
+			return searchAllUsers();
+		}
+		q = Util.toPlainText(q);
+		List<User> result = new ArrayList<>();
+		for (User user : users.values()) {
+			if (Util.toPlainText(user.getUsername()).contains(q) ||
+					Util.toPlainText(user.getFirstName()).contains(q) ||
+					Util.toPlainText(user.getLastName()).contains(q) ||
+					Util.toPlainText(user.getNamePrepositions()).contains(q)) {
+				result.add(user);
+			}
+		}
+		return result;
 	}
 	
 	// *** CREATE ***

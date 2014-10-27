@@ -3,17 +3,22 @@ package vanderzijden.notflix.resource;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import vanderzijden.notflix.model.User;
+import vanderzijden.notflix.resource.model.UserSearchResult;
+import vanderzijden.notflix.resource.model.UserSort;
+import vanderzijden.notflix.resource.model.UserSort.SortOrder;
 
 @Path("user")
 public class UserResource extends BaseResource {
@@ -34,9 +39,16 @@ public class UserResource extends BaseResource {
 	
 	@GET
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
-	public List<User> getUsers()
+	public UserSearchResult searchUsers(
+			@DefaultValue("") @QueryParam("q") String q,
+			@DefaultValue("0") @QueryParam("page") int page,
+			@DefaultValue("10") @QueryParam("pageSize") int pageSize,
+			@DefaultValue("None") @QueryParam("sort") SortOrder sort)
 	{
-		return getModel().getUsers();
+		List<User> users = getModel().searchUsers(q);
+		UserSort.sort(users, sort);
+		UserSearchResult searchResult = new UserSearchResult(users, page, pageSize);
+		return searchResult;
 	}
 	
 	@GET

@@ -1,0 +1,55 @@
+<div class="col-xs-12">
+  <form novalidate role="form">
+    <div class="form-group col-xs-12">
+      <input class="form-control" ng-model="params.q" ng-change="firstPage()" ng-model-options="{ debounce: 500 }" type="text" placeholder="{{ctx.queryPlaceholder}}">
+    </div>
+    <div class="form-group col-lg-3 col-sm-6 col-xs-12">
+      <select class="form-control" ng-model="params.sort" ng-change="firstPage()"
+        ng-options="sort[0] as sort[1] for sort in ctx.sortOrders">
+      </select>
+    </div>
+    <div class="form-group col-lg-3 col-sm-6 col-xs-12">
+      <select class="form-control" ng-model="params.pageSize" ng-change="firstPage()">
+        <option value="12">12 results</option>
+        <option value="24">24 results</option>
+        <option value="48">48 results</option>
+        <option value="96">96 results</option>
+      </select>
+    </div>
+    <div class="form-group col-lg-3 col-sm-6 col-xs-12">
+      <select class="form-control" ng-model="displayModus"
+        ng-options="mode[0] as mode[1] for mode in ctx.displayModes">
+      </select>
+    </div>
+    <div class="form-group col-lg-3 col-sm-6 col-xs-12">
+      <select class="form-control" ng-model="ctx.name" ng-change="switchSearch(ctx.name)">
+        <option value="searchMovies">Search Movies</option>
+        <option value="searchUsers">Search Users</option>
+      </select>
+    </div>
+  </form>
+  <div class="search-results" ng-hide="userMessage">
+    <p>{{size}} results {{ pageInfo() }}</p>
+    <results-view class="row" data-ctx-name="searchMovies" ng-show="{{ctx.name == 'searchMovies'}}">
+    </results-view>
+    <results-view class="row" data-ctx-name="searchUsers" ng-show="{{ctx.name == 'searchUsers'}}">
+    </results-view>
+    <div class="row">
+      <div class="col-xs-3">
+        <button ng-click="firstPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span></button>
+      </div>
+      <div class="col-xs-3">
+        <button ng-click="prevPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-left"></span></button>
+      </div>
+      <div class="col-xs-3">
+        <button ng-click="nextPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+      <div class="col-xs-3">
+        <button ng-click="lastPage()" class="form-control btn btn-default col-xs-3"><span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+    </div>
+  </div>
+  <div ng-show="userMessage">
+    <p>{{userMessage}}</p>
+  </div>
+</div>

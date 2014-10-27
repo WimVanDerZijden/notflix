@@ -35,7 +35,7 @@ public class SearchResult {
 			return movies;
 		// Catch illegal parameters...
 		if (page < 0 || pageSize < 1 || pageSize > 100) {
-			Log.info(MovieSort.class, "Invalid begin and/or limit query param");
+			Log.info(SearchResult.class, "Invalid begin and/or limit query param");
 			throw new WebApplicationException(400);
 		}
 		int begin = page * pageSize;

@@ -28,6 +28,9 @@ public class Util {
 	 * @return
 	 */
 	public static String toPlainText(String in) {
+		if (in == null) {
+			return "";
+		}
 		return deAccent(in.toLowerCase()).replaceAll("[^\\w\\s]","");
 	}
 	
