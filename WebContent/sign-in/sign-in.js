@@ -13,8 +13,8 @@
     }
   })
   
-  .controller('SignInCtrl', ['$scope', '$http', '$cookies', 'storage', '$rootScope','$route','$cacheFactory',
-    function($scope, $http, $cookies, storage, $rootScope, $route, $cacheFactory) {
+  .controller('SignInCtrl', ['$scope', '$http', 'storage', '$rootScope','$route','$cacheFactory',
+    function($scope, $http, storage, $rootScope, $route, $cacheFactory) {
       console.log("Controller SignInCtrl init");
       $scope.invalidUserPass = false;
       $scope.toggle = true;
@@ -27,9 +27,9 @@
         $http.post('resources/session/login', $.param($scope.params))
         .success(function(data) {
           //$cookies.token = data["token"];
-          // Plain javascript here, because we can't afford to wait for
+          // We use jquery here, because we can't afford to wait for
           // angular to serialize this: the reload() must have the cookie immediately
-          setCookie("token",data["token"],365);
+          $.cookie("token", data["token"], { path: "/"} );
           $route.reload();
         })
         .error(function() {
@@ -38,18 +38,10 @@
         });
       };
       
-      function setCookie(c_name,value,exdays) {
-        var exdate=new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value=escape(value) + 
-          ((exdays==null) ? "" : ("; expires="+exdate.toUTCString()));
-        document.cookie=c_name + "=" + c_value;
-      }
-      
       // Global sign out to call from outside of scope
       $rootScope.signOut = function() {
         console.log("Signing out and reloading page");
-        delete $cookies["token"];
+        $.removeCookie("token", { path: "/"});
         $scope.params.password = "";
         // Remove the cache to force a reload
         $cacheFactory.get("$http").removeAll();
@@ -67,7 +59,9 @@
         .success(function(data) {
           $('#sign-in-btn').button('reset');
           $scope.invalidUserPass = false;
-          setCookie("token",data["token"],365);
+          // We use jquery here, because we can't afford to wait for
+          // angular to serialize this: the reload() must have the cookie immediately
+          $.cookie("token", data["token"], { path: "/"} );
           $route.reload();
           $('#signin').modal('hide');
           if (!$scope.rememberMe) {

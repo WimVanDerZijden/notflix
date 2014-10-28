@@ -356,7 +356,7 @@ jQuery(document).ready(function ($) {
         data: $(this).serialize(),
         success: function(data) {
           $.cookie("token", data["token"], { path: "/"} );
-          $('#signin').popup("close");        
+          $('#signin').popup("close");
           $.mobile.loading("hide");
           view.checkLoggedIn();
           // Reload page because there may be user-specific data
