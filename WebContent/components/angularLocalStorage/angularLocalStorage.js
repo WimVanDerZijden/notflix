@@ -141,7 +141,7 @@
 				var storeName = opts.storeName || key;
 
 				// If a value doesn't already exist store it as is
-				if (!publicMethods.get(storeName)) {
+				if (publicMethods.get(storeName) === null) {
 					publicMethods.set(storeName, opts.defaultValue);
 				}
 

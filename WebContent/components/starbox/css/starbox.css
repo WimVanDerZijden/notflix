@@ -15,7 +15,7 @@
 .starbox .dotted .stars,
 .starbox .dotted .hover .stars,
 .starbox .dotted .rated .stars, 
-.starbox .dotted .rated .hover .stars { background: url(../media/starbox/background_dotted.gif) top left repeat-x; }
+.starbox .dotted .rated .hover .stars { background: url(../images/starbox/background_dotted.gif) top left repeat-x; }
 .starbox .dotted .colorbar,
 .starbox .dotted .hover .colorbar,
 .starbox .dotted .rated .colorbar, 
