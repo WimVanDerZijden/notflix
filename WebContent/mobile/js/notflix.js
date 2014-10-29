@@ -4,22 +4,21 @@ jQuery(document).ready(function ($) {
   
   // *** MODEL *** \\
   
-  var model = (function() {
+  var model = (function () {
 
     // #home-page vars
-    var movies = [];
-    var size = 0;
-    var page = 0;
-    var pageSize = 10;
-    var query = "";
-    var sort = "TitleAsc";
-    
-    // #movie-page vars
-    var movie;
+    var movies = [],
+      size = 0,
+      page = 0,
+      pageSize = 10,
+      query = "",
+      sort = "TitleAsc",
+      // #movie-page vars
+      movie;
     
     function setMovies(data) {
-      movies = data["movies"];
-      size = data["size"];
+      movies = data.movies;
+      size = data.size;
     }
 
     function clearMovies() {

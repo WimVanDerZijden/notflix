@@ -15,10 +15,10 @@
     function($routeProvider, $httpProvider) {
       console.log("Module notflix config");
       
-	  $routeProvider
-	  .when('/movie/', {
-	    templateUrl: 'search-results/search-results.html',
-	    controller: 'MovieResultsCtrl'
+	    $routeProvider
+	    .when('/movie/', {
+	      templateUrl: 'search-results/search-results.html',
+	      controller: 'MovieResultsCtrl'
       })
       .when('/user', {
         templateUrl: 'search-results/search-results.html',
