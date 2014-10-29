@@ -31,6 +31,7 @@
   	  /* This following method is just to demonstrate cross-domain ajax 
   	   * The image url we are retrieving is already in our model! */
   	  var loadImageFromOmdb = function() {
+  		  /* This Works, but deactivated, because it is purely demonstrational
   	  $http.get('http://www.omdbapi.com', { params: { i: $scope.movie.imdbID }})
     	  .success(function(data) {
     	    console.log("Retrieved movie data from omdb api.");
@@ -39,6 +40,7 @@
     	  .error(function() {
     	    console.log("Could not connect to the omdb api");
     	  });
+    	  */
   	  };
   	  
   	  /* The starbox ui for voting */

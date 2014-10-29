@@ -31,7 +31,7 @@ var Starboxes = {
     rated: false,                                // or a rating to indicate a vote has been cast
     ratedClass: 'rated',                         // class when rated
     rerate: false,                               // allow rerating
-    overlay: 'default.png',                      // default star overlay image
+    overlay: 'big.png',                      // default star overlay image
     overlayImages: '../media/starbox/',         // directory of images relative to this file
     stars: 5,                                    // the amount of stars
     total: 0                                     // amount of votes cast
