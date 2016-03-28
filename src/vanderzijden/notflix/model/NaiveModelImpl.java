@@ -1,5 +1,7 @@
 package vanderzijden.notflix.model;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -12,7 +14,9 @@ import javax.ws.rs.WebApplicationException;
 import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.application.Util;
 
-public class Model {
+import com.google.gson.Gson;
+
+public class NaiveModelImpl implements NotflixModel {
 	
 	private final Map<String, Movie> movies = new HashMap<>();
 	private final Map<String, User> users = new HashMap<>();
@@ -20,8 +24,27 @@ public class Model {
 	 
 	private static final SecureRandom random = new SecureRandom();
 
+	@Override
+	public void save(String filename)
+	{
+		clearSessions();
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		Log.info(this, "Saving model as json.");
+		try {
+			PrintWriter pw = new PrintWriter(filename);
+			pw.print(json);
+			pw.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not save model to: " + filename);
+			e.printStackTrace();
+		}
+
+	}
+	
 	// *** GET ***
 	
+	@Override
 	public User getUser(String username) {
 		User user = users.get(username);
 		if (user == null) {
@@ -38,6 +61,7 @@ public class Model {
 	 * @param imdb_tt
 	 * @return
 	 */
+	@Override
 	public Movie getMovie(String imdb_tt) {
 		Movie movie = movies.get(imdb_tt);
 		if (movie == null) {
@@ -54,6 +78,7 @@ public class Model {
 	 * @param token
 	 * @return
 	 */
+	@Override
 	public Session getSession(String token) {
 		Session session = sessions.get(token);
 		if (session == null) {
@@ -103,11 +128,12 @@ public class Model {
 	 * Search for movies by title.
 	 * 
 	 * Case-insensitive and converts diacritical characters,
-	 * e.g. 'é' to 'e'
+	 * e.g. 'ï¿½' to 'e'
 	 * 
 	 * @param q
 	 * @return
 	 */
+	@Override
 	public List<Movie> searchMovies(String q) {
 		if (q == null || q.equals("")) {
 			return searchAllMovies();
@@ -127,14 +153,17 @@ public class Model {
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<Movie> searchAllMovies() {
 		return new ArrayList<>(movies.values());
 	}
 	
+	@Override
 	public List<User> searchAllUsers() {
 		return new ArrayList<>(users.values());
 	}
 	
+	@Override
 	public List<User> searchUsers(String q)
 	{
 		if (q == null || q.equals("")) {
@@ -154,6 +183,7 @@ public class Model {
 	}
 	
 	// *** CREATE ***
+	@Override
 	public Session createSession(String username, String password) {
 		User user = users.get(username);
 		if (user == null || !user.checkPassword(password)) {
@@ -169,6 +199,7 @@ public class Model {
 		return session;
 	}
 	
+	@Override
 	public User createUser(String username, String firstName, String namePrepositins, String lastName, String password)
 	{
 		if (users.containsKey(username)) {
@@ -182,14 +213,17 @@ public class Model {
 	
 
 	// *** OTHER ***
+	@Override
 	public void addMovie(Movie movie) {
 		movies.put(movie.getImdbID(), movie);
 	}
 	
+	@Override
 	public void addUser(User user) {
 		users.put(user.getUsername(), user);
 	}
 	
+	@Override
 	public void clearSessions() {
 		sessions.clear();
 	}

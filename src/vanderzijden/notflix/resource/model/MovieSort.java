@@ -73,7 +73,11 @@ public class MovieSort {
 		
 		@Override
 		public int compare(Movie movie, Movie movie2) {
-			return movie.getImdbRating().compareTo(movie2.getImdbRating());
+			if (movie.getImdbRating() < movie2.getImdbRating())
+				return -1;
+			if (movie.getImdbRating() > movie2.getImdbRating())
+				return 1;
+			return 0;
 		}
 	}
 	

@@ -47,6 +47,18 @@ public class Movie {
 	private int imdbVotes;
 	private double imdbRating;
 	protected Map<String,Rating> ratings = new HashMap<>();
+	
+	private String dbpUri;
+
+	public String getDbpUri()
+	{
+		return dbpUri;
+	}
+
+	public void setDbpUri(String dbpUri)
+	{
+		this.dbpUri = dbpUri;
+	}
 
 	/**
 	 * Parsing OmdbApi JSON to Movie. We don't use Jackson to marshall it,
@@ -144,6 +156,7 @@ public class Movie {
 		imdbRating = movie.imdbRating;
 		imdbVotes = movie.imdbVotes;
 		ratings = movie.ratings;
+		dbpUri = movie.dbpUri;
 	}
 	
 	@XmlElement
@@ -343,7 +356,7 @@ public class Movie {
 		this.imdbVotes = imdbVotes;
 	}
 
-	public Double getImdbRating() {
+	public double getImdbRating() {
 		return imdbRating;
 	}
 

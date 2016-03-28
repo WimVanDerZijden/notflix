@@ -23,6 +23,7 @@
 	       <span> {{movie.imdbRating}}/10 from {{movie.imdbVotes | number}} users</span>
 	     </a>
 	    </p>
+	    <p ng-if="movie.dbpUri"><a property="owl:sameAs" ng-href="{{movie.dbpUri}}">DBpedia link</a></p>
 	    <button class="btn btn-primary" ng-click="back()"><span class="glyphicon glyphicon-arrow-left"></span> Back to search</button>
     </div>
   </div>

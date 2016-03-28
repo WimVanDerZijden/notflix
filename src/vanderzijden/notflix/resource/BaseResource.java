@@ -4,7 +4,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.Context;
 
-import vanderzijden.notflix.model.Model;
+import vanderzijden.notflix.model.NotflixModel;
 import vanderzijden.notflix.model.Session;
 import vanderzijden.notflix.model.User;
 
@@ -37,7 +37,7 @@ public abstract class BaseResource {
 	 * 
 	 * @return
 	 */
-	protected Model getModel() {
+	protected NotflixModel getModel() {
 		if (CONNECTION_DELAY > 0) {
 			try {
 				Thread.sleep(CONNECTION_DELAY);
@@ -45,7 +45,7 @@ public abstract class BaseResource {
 				e.printStackTrace();
 			}
 		}
-		return (Model) ctx.getAttribute("model");
+		return (NotflixModel) ctx.getAttribute("model");
 	}
 	
 	/**

@@ -1,8 +1,7 @@
-package vanderzijden.notflix.application;
+package vanderzijden.notflix.semweb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 import javax.servlet.ServletContext;
@@ -13,12 +12,10 @@ import javax.servlet.annotation.WebListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import vanderzijden.notflix.model.NotflixModel;
+import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.model.Movie;
-import vanderzijden.notflix.model.NaiveModelImpl;
+import vanderzijden.notflix.model.NotflixModel;
 import vanderzijden.notflix.model.User;
-
-import com.google.gson.Gson;
 
 /**
  * Loads the model on init as json.
@@ -31,16 +28,18 @@ import com.google.gson.Gson;
  * Mostly copied from WebTechnologie Opdracht 1: eenvoudige kamerverhuur applicatie
  *
  */
-
-public class AppContextListener implements ServletContextListener {
+@WebListener
+public class SemwebAppContextListener implements ServletContextListener {
 
 	/** Set to true to reload the model (loosing all user data).
 	 * As long as this property is true, all user data will be lost on a server restart
 	 * 
 	 */
-	private static final boolean RELOAD_MODEL = true;
+	private static final boolean RELOAD_MODEL = false;
 	
-	private static final String MODEL_SAVE_FILE = "model_save_file.json";
+	private static final String MODEL_SAVE_FILE = "model_save_file.xml";
+	
+	private static final String MODEL_ONTOLOGY = "notflix_ontology.xml";
 	/**
 	 *  Requested 729,513 movies via omdb-api.
 	 *  Added: 88,951
@@ -57,13 +56,14 @@ public class AppContextListener implements ServletContextListener {
 		ctx = event.getServletContext();
 		Scanner scanner = null;
 		NotflixModel model = null;
+		
 		try {
 			File file = new File(getModelPath(ctx)); 
 			// Simply use as delimiter a string that will 'never' occur in the source file
 			scanner = new Scanner(file).useDelimiter("!@#endoffile!@#");
 			String in = scanner.next();
-			Log.info(this,"Loading model saved as json.");
-			model = new Gson().fromJson(in, NaiveModelImpl.class); // TODO load RDFNotflixModel instead
+			Log.info(this,"Loading model saved as rdf triples.");
+			model = new RDFNotflixModel(getOntologyPath(ctx), getModelPath(ctx));
 		} catch (FileNotFoundException e) {
 			Log.warning(this,"Unable to load model from: " + getModelPath(ctx));
 		} finally {
@@ -72,7 +72,7 @@ public class AppContextListener implements ServletContextListener {
 		}
 		// Failed to load model: create new model // TODO load RDFNotflixModel instead
 		if (model == null || RELOAD_MODEL) {
-			model = new NaiveModelImpl();
+			model = new RDFNotflixModel(getOntologyPath(ctx));
 			loadTestData(model);
 		}
 		ctx.setAttribute("model", model);
@@ -82,7 +82,8 @@ public class AppContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent event) {
 		ServletContext ctx = event.getServletContext();
 		NotflixModel model = (NotflixModel) ctx.getAttribute("model");
-		model.save(getModelPath(ctx));
+		if (model != null)
+			model.save(getModelPath(ctx));
 	}
 	
 	private String getModelPath(ServletContext ctx)
@@ -94,7 +95,12 @@ public class AppContextListener implements ServletContextListener {
 	{
 		return ctx.getRealPath("/WEB-INF") + "/" + MOVIES_JSON;
 	}
-	
+
+	private static String getOntologyPath(ServletContext ctx)
+	{
+		return ctx.getRealPath("/WEB-INF") + "/" + MODEL_ONTOLOGY;
+	}
+
 	private void loadTestData(NotflixModel model) {
 		Scanner scanner = null;
 		try {
@@ -108,8 +114,9 @@ public class AppContextListener implements ServletContextListener {
 				JSONObject jsonMovie = jsonMovies.getJSONObject(n);
 				model.addMovie(Movie.parseFromOmdbApi(jsonMovie));
 			}
+			model.save(getModelPath(ctx));
 		} catch (FileNotFoundException e) {
-			Log.severe(AppContextListener.class, "File not found: " + getMoviesPath(ctx));
+			Log.severe(SemwebAppContextListener.class, "File not found: " + getMoviesPath(ctx));
 			e.printStackTrace();
 		} finally {
 			if (scanner != null)
