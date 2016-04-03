@@ -30,10 +30,11 @@ public class MovieResource extends BaseResource {
 	@Path("{imdb_tt: tt\\d+}")	//	base_url/resources/movies/imdb_tt12345
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) 
 	public Movie getMovie(
-			@PathParam("imdb_tt") String imdb_tt)
+			@PathParam("imdb_tt") String imdb_tt,
+			@DefaultValue("en") @QueryParam("lang") String lang)
 	{
 		User user = getUserOpt();
-		return new UserMovie(getModel().getMovie(imdb_tt), user);
+		return new UserMovie(getModel().getMovie(imdb_tt, lang), user);
 	}
 	
 	@GET

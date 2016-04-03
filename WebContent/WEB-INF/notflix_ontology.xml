@@ -20,15 +20,19 @@
   <owl:subClassOf>
     <owl:Restriction>
       <owl:onProperty rdf:resource="#title"/>
-      <owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-      <owl:cardinality>1</owl:cardinality>
+      <owl:allValuesFrom rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
     </owl:Restriction>
   </owl:subClassOf>
+  <owl:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#title"/>
+      <owl:minCardinality>1</owl:minCardinality>
+    </owl:Restriction>
+  </owl:subClassOf>  
   <owl:subClassOf>
     <owl:Restriction>
       <owl:onProperty rdf:resource="#imdbID"/>
       <owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-      <owl:cardinality>1</owl:cardinality>
     </owl:Restriction>
   </owl:subClassOf>
   <owl:subClassOf>
@@ -38,13 +42,6 @@
       <owl:cardinality>1</owl:cardinality>
     </owl:Restriction>
   </owl:subClassOf>
-  <owl:subClassOf>
-    <owl:Restriction>
-      <owl:onProperty rdf:resource="#year"/>
-      <owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-      <owl:cardinality>1</owl:cardinality>
-    </owl:Restriction>
-  </owl:subClassOf>  
 </owl:Class>
 
 <owl:DatatypeProperty rdf:ID="imdbID"/>

@@ -62,7 +62,7 @@ public class NaiveModelImpl implements NotflixModel {
 	 * @return
 	 */
 	@Override
-	public Movie getMovie(String imdb_tt) {
+	public Movie getMovie(String imdb_tt, String lang) {
 		Movie movie = movies.get(imdb_tt);
 		if (movie == null) {
 			Log.info(this, "Movie not found: " + imdb_tt);

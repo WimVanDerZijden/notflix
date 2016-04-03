@@ -14,20 +14,22 @@
         $location.path('/movie');
       };
       
-  	  $http.get('resources/movie/' + $routeParams.imdbId )
-  	  .success(function(data) {
-  	    $scope.movie = data;
-  	    $scope.userMessage = "";
-  	    initStarbox($scope.movie.imdbID, $scope.movie.rating / 2);
-  	    initStarboxAvg($scope.movie.avgRating / 2, $scope.movie.votes);
-  	    // Non-functional, just to demonstrate cross-domain ajax
-  	    loadImageFromOmdb();
-  	  })
-  	  .error(function() {
-  	    $scope.movie = undefined;
-  	    $scope.userMessage = "Movie not found"
-  	  });
-  	  
+      $scope.loadMovie = function loadMovie(){
+	  	  $http.get('resources/movie/' + $routeParams.imdbId + '?lang=' + $scope.lang.selected)
+	  	  .success(function(data) {
+	  	    $scope.movie = data;
+	  	    $scope.userMessage = "";
+	  	    initStarbox($scope.movie.imdbID, $scope.movie.rating / 2);
+	  	    initStarboxAvg($scope.movie.avgRating / 2, $scope.movie.votes);
+	  	    // Non-functional, just to demonstrate cross-domain ajax
+	  	    loadImageFromOmdb();
+	  	  })
+	  	  .error(function() {
+	  	    $scope.movie = undefined;
+	  	    $scope.userMessage = "Movie not found"
+	  	  });
+      };
+      $scope.loadMovie();
   	  /* This following method is just to demonstrate cross-domain ajax 
   	   * The image url we are retrieving is already in our model! */
   	  var loadImageFromOmdb = function() {

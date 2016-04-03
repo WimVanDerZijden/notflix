@@ -2,7 +2,6 @@ package vanderzijden.notflix.semweb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -20,20 +19,16 @@ import org.apache.jena.reasoner.ValidityReport;
 import org.apache.jena.reasoner.ValidityReport.Report;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.PrintUtil;
-import org.apache.jena.vocabulary.RDF;
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import vanderzijden.notflix.model.Movie;
 
 public class CreateNotflixRDF
 {
 	
-	private static final String ONTOLOGY = "project/notflix_ontology.xml";
-	private static final String DATA_FILE = "project/notflix_data.xml";
+	private static final String ONTOLOGY = "C:\\dev\\workspaces\\utwente\\notflix\\WebContent\\WEB-INF\\notflix_ontology.xml";
+	private static final String DATA_FILE = "C:\\Users\\Wim\\WebDeployment\\wtpwebapps\\notflix\\WEB-INF\\model_save_file.xml";
 	private static final String ONTOLOGY_NS = "http://www.notflix.vanderzijden.nl/ontology#";
 	private static final String DATA_NS = "http://www.notflix.vanderzijden.nl/movies#";
-	private static final String JSON_MOVIES = "project/top250.json";
+	private static final String JSON_MOVIES = "C:\\dev\\workspaces\\utwente\\notflix\\WebContent\\WEB-INF\\movies-top3.json";
 
 	public static void main(String[] args) throws IOException
 	{
@@ -42,7 +37,7 @@ public class CreateNotflixRDF
 		Property imdbID = schema.getProperty(ONTOLOGY_NS, "imdbID");
 		Property title = schema.getProperty(ONTOLOGY_NS, "title");
 		
-		
+		/*
 		Model data = ModelFactory.createDefaultModel();
 		
 		JSONArray jsonMovies = getJSONArray(JSON_MOVIES);
@@ -56,22 +51,22 @@ public class CreateNotflixRDF
 			aFilm.addProperty(title, movie.getTitle());
 			
 		}
+		*/
 		
-		
-		// Model data = FileManager.get().loadModel("project/notflix_data.xml", DATA_NS, null );
+		Model data = FileManager.get().loadModel(DATA_FILE, DATA_NS, null );
 		
 		Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
 		reasoner = reasoner.bindSchema(schema);
 		InfModel infmodel = ModelFactory.createInfModel(reasoner, data);
 
-		printStatements(data, null, null, null);
+		printStatements(infmodel, null, null, null);
 		
 		checkValidity(infmodel);
 		
-		FileWriter fw = new FileWriter(DATA_FILE); 
-		data.write(fw);
+		//FileWriter fw = new FileWriter(DATA_FILE); 
+		//data.write(fw);
 		
-		fw.close();
+		//fw.close();
 		schema.close();
 		data.close();
 	}

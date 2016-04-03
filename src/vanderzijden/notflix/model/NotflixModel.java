@@ -7,7 +7,7 @@ public interface NotflixModel
 
 	User getUser(String username);
 	
-	Movie getMovie(String imdb_tt);
+	Movie getMovie(String imdb_tt, String lang);
 	
 	Session getSession(String token);
 	

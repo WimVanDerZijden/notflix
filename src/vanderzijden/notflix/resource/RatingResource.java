@@ -29,7 +29,7 @@ public class RatingResource extends BaseResource {
 			@FormParam("halfStars") int halfStars)
 	{
 		User user = getUser();
-		Movie movie = getModel().getMovie(imdb_tt);
+		Movie movie = getModel().getMovie(imdb_tt, null);
 		Rating rating = movie.createRating(user, halfStars);
 		// Include location of created resource
 		URI uri = UriBuilder.fromResource(RatingResource.class).path(imdb_tt).build();
@@ -44,7 +44,7 @@ public class RatingResource extends BaseResource {
 			@FormParam("halfStars") int halfStars)
 	{
 		User user = getUser();
-		Movie movie = getModel().getMovie(imdb_tt);
+		Movie movie = getModel().getMovie(imdb_tt, null);
 		return movie.updateRating(user, halfStars);
 	}
 	
@@ -55,7 +55,7 @@ public class RatingResource extends BaseResource {
 			@PathParam("imdb_tt") String imdb_tt)
 	{
 		User user = getUser();
-		Movie movie = getModel().getMovie(imdb_tt);
+		Movie movie = getModel().getMovie(imdb_tt, null);
 		return movie.getRating(user);
 	}
 	
@@ -66,7 +66,7 @@ public class RatingResource extends BaseResource {
 			@PathParam("imdb_tt") String imdb_tt)
 	{
 		User user = getUser();
-		Movie movie = getModel().getMovie(imdb_tt);
+		Movie movie = getModel().getMovie(imdb_tt, null);
 		return movie.deleteRating(user);
 	}
 }

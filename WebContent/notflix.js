@@ -8,7 +8,8 @@
     'notflix.signIn',
     'notflix.movieResults',
     'notflix.userResults',
-    'notflix.movieDetail'
+    'notflix.movieDetail',
+    'angularLocalStorage'
   ])
   
   .config(['$routeProvider','$httpProvider',
@@ -66,12 +67,24 @@
       /*$http.defaults.headers.delete = { 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8;'};*/
   }])
   
-  .controller('NotflixCtrl', ['$scope','$cookies',
-    function($scope, $cookies) {
+  .controller('NotflixCtrl', ['$scope','$cookies','storage',
+    function($scope, $cookies,storage) {
       console.log("Controller NotflixCtrl init");
       $scope.signedIn = function() {
         return $cookies.token;
       };
+      
+      $scope.languages = languages;
+      
+      storage.bind($scope,'lang', {
+          defaultValue: { selected: languages[0] },
+          storeName: 'lang'
+      });
+      
+      $scope.getLanguages = function getLanguages()
+      {
+    	  return Object.keys(languages);
+      }
   }]);
 
 })();

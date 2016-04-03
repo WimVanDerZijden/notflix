@@ -13,7 +13,8 @@
         <div id="star-widget"></div>
         <div class="btn btn-danger btn-xs" ng-show="movie.rating > 0" ng-click="deleteRating()"><span class="glyphicon glyphicon-remove"></span></div>
       </div>
-	    <p>{{movie.plot}}</p>
+      	<p ng-if="movie.abstract2">{{movie.abstract2}}</p>
+	    <p ng-if="!movie.abstract2">{{movie.plot}}</p>
 	    <p><b>Directed by: </b>{{movie.director}}</p>
 	    <p><b>Written by: </b>{{movie.writer}}</p>
 	    <p><b>Actors: </b>{{movie.actors}}</p>
@@ -23,7 +24,11 @@
 	       <span> {{movie.imdbRating}}/10 from {{movie.imdbVotes | number}} users</span>
 	     </a>
 	    </p>
-	    <p ng-if="movie.dbpUri"><a property="owl:sameAs" ng-href="{{movie.dbpUri}}">DBpedia link</a></p>
+	    <div ng-if="movie.dbpUri">
+	    	<p><a property="owl:sameAs" ng-href="{{movie.dbpUri}}">DBpedia link</a></p>
+	    	<select ng-options="lang as languages[lang].nativeName for lang in getLanguages() | orderBy: languages[lang].nativeName" 
+	    	ng-model="lang.selected" style="max-width:90%;" ng-change="loadMovie()"></select>
+	    </div>
 	    <button class="btn btn-primary" ng-click="back()"><span class="glyphicon glyphicon-arrow-left"></span> Back to search</button>
     </div>
   </div>

@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -48,7 +49,27 @@ public class Movie {
 	private double imdbRating;
 	protected Map<String,Rating> ratings = new HashMap<>();
 	
+	// DBpedia attributes
 	private String dbpUri;
+	private String abstract2;
+	
+	private List<Director> directors;
+
+	public List<Director> getDirectors() {
+		return directors;
+	}
+
+	public void setDirectors(List<Director> directors) {
+		this.directors = directors;
+	}
+
+	public String getAbstract2() {
+		return abstract2;
+	}
+
+	public void setAbstract2(String abstract2) {
+		this.abstract2 = abstract2;
+	}
 
 	public String getDbpUri()
 	{
@@ -156,7 +177,9 @@ public class Movie {
 		imdbRating = movie.imdbRating;
 		imdbVotes = movie.imdbVotes;
 		ratings = movie.ratings;
+		// DBpedia attributes
 		dbpUri = movie.dbpUri;
+		abstract2 = movie.abstract2;
 	}
 	
 	@XmlElement
@@ -250,6 +273,8 @@ public class Movie {
 	}
 
 	public void setTitle(String title) {
+		if (title == null)
+			return;
 		this.title = title;
 		this.plainTitle = Util.toPlainText(title);
 	}
