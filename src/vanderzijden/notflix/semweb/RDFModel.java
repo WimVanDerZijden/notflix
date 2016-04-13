@@ -1,5 +1,7 @@
 package vanderzijden.notflix.semweb;
 
+import java.sql.Timestamp;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.NodeIterator;
@@ -27,6 +29,9 @@ public class RDFModel {
 	protected final Property imdbRating;
 	protected final Property released;
 	protected final Property runtime;
+	protected final Property writer;
+	protected final Property director;
+	protected final Property actors;
 
 	public RDFModel(String ontologyLocation, String modelLocation) {
 		ontology = FileManager.get().loadModel(ontologyLocation, ONTOLOGY_NS, null);
@@ -43,6 +48,9 @@ public class RDFModel {
 		imdbRating = ontology.createProperty(ONTOLOGY_NS, "imdbRating");
 		released = ontology.createProperty(ONTOLOGY_NS, "released");
 		runtime = ontology.createProperty(ONTOLOGY_NS, "runtime");
+		writer = ontology.createProperty(ONTOLOGY_NS, "writer");
+		director = ontology.createProperty(ONTOLOGY_NS, "director");
+		actors = ontology.createProperty(ONTOLOGY_NS, "actors");
 	}
 
 	public RDFModel(String ontologyLocation) {
@@ -58,12 +66,15 @@ public class RDFModel {
 
 	public String getString(Resource resource, Property property, String lang) {
 		NodeIterator iter = model.listObjectsOfProperty(resource, property);
+		String fallback = null;
 		while (iter.hasNext()) {
 			RDFNode node = iter.next();
 			if (node.asLiteral().getLanguage().equals(lang))
 				return node.asLiteral().getLexicalForm();
+			if (node.asLiteral().getLanguage().equals("en"))
+				fallback = node.asLiteral().getLexicalForm();
 		}
-		return null;
+		return fallback;
 	}
 	
 	public int getInt(Resource resource, Property property)
@@ -85,6 +96,18 @@ public class RDFModel {
 		return Long.parseLong(getString(resource, property));
 		}
 		catch (NumberFormatException e)
+		{
+			return 0L;
+		}
+	}
+	
+	public long getDate(Resource resource, Property property)
+	{
+		try
+		{
+			return Timestamp.valueOf(getString(resource, property) + " 00:00:00").getTime();
+		}
+		catch (IllegalArgumentException e)
 		{
 			return 0L;
 		}

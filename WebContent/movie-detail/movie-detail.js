@@ -5,6 +5,17 @@
   
   angular.module('notflix.movieDetail', [])
   
+  .directive('person', function() {
+	  return {
+		  restrict: 'E',
+		  templateUrl: 'movie-detail/person.html',
+		  scope: {
+			  items: '=items',
+			  collid: '=collid'
+		  }
+	  }
+  })
+  
   .controller('MovieDetailCtrl', ['$scope', '$routeParams', '$http', '$location',
     function($scope, $routeParams, $http, $location) {
       console.log("Controller MovieDetailCtrl init");

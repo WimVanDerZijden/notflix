@@ -15,9 +15,15 @@
       </div>
       	<p ng-if="movie.abstract2">{{movie.abstract2}}</p>
 	    <p ng-if="!movie.abstract2">{{movie.plot}}</p>
-	    <p><b>Directed by: </b>{{movie.director}}</p>
-	    <p><b>Written by: </b>{{movie.writer}}</p>
-	    <p><b>Actors: </b>{{movie.actors}}</p>
+	    <h4>Director</h4>
+	    <person items="movie.directors" collid="'directors'"></person>
+	    <p ng-if="movie.directors.length == 0">{{movie.director}}</p>
+	    <h4>Writer</h4>
+	    <person items="movie.writers" collid="'writers'"></person>
+	    <p ng-if="movie.writers.length == 0">{{movie.writer}}</p>
+	    <h4>Actors</h4>
+	    <person items="movie.actors2" collid="'actors'"></person>
+	    <p ng-if="movie.actors2.length == 0">{{movie.actors}}</p>
 	    <p>
 	     <a ng-href="http://www.imdb.com/title/{{movie.imdbID}}/" class="ui-btn">
 	       <img src="media/imdb.png" class="imdb-icon">

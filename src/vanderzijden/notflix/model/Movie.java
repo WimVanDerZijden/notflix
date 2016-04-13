@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -53,16 +54,37 @@ public class Movie {
 	private String dbpUri;
 	private String abstract2;
 	
-	private List<Director> directors;
+	private List<Person> directors = new ArrayList<>();
+	private List<Person> actors2 = new ArrayList<>();
+	private List<Person> writers = new ArrayList<>();
 
-	public List<Director> getDirectors() {
+	public List<Person> getDirectors() {
 		return directors;
 	}
-
-	public void setDirectors(List<Director> directors) {
+	
+	public void setDirectors(List<Person> directors) {
 		this.directors = directors;
 	}
 
+	public List<Person> getActors2()
+	{
+		return actors2;
+	}
+
+	public void setActors2(List<Person> actors) {
+		this.actors2 = actors;
+	}
+	
+	public List<Person> getWriters()
+	{
+		return writers;
+	}
+	
+	public void setWriters(List<Person> writers)
+	{
+		this.writers = writers;
+	}
+	
 	public String getAbstract2() {
 		return abstract2;
 	}
@@ -180,6 +202,9 @@ public class Movie {
 		// DBpedia attributes
 		dbpUri = movie.dbpUri;
 		abstract2 = movie.abstract2;
+		directors = new ArrayList<>(movie.directors);
+		actors2 = new ArrayList<>(movie.actors2);
+		writers = new ArrayList<>(movie.writers);
 	}
 	
 	@XmlElement

@@ -19,18 +19,20 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import vanderzijden.notflix.application.Log;
 import vanderzijden.notflix.application.Util;
-import vanderzijden.notflix.model.Director;
 import vanderzijden.notflix.model.Movie;
 import vanderzijden.notflix.model.NotflixModel;
+import vanderzijden.notflix.model.Person;
 import vanderzijden.notflix.model.Session;
 import vanderzijden.notflix.model.User;
 
@@ -74,23 +76,27 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 		aFilm.addProperty(imdbRating, "" + movie.getImdbRating());
 		aFilm.addProperty(released, "" + movie.getReleased());
 		aFilm.addProperty(runtime, "" + movie.getRuntime());
-		
+		aFilm.addProperty(director, movie.getDirector());
+		aFilm.addProperty(writer, movie.getWriter());
+		aFilm.addProperty(actors, movie.getActors());
 		//linkDBpedia(aFilm, movie.getTitle());
 	}
 	
-	private void linkDBpedia(Resource resource, String label)
+	private void linkDBpedia(Resource resource, String label, int runtime)
 	{
+		// Match dbpedia on title=label(eng) and runtime=runtime
 		ParameterizedSparqlString queryString = new ParameterizedSparqlString(
-		//String queryString =
-				"SELECT ?o WHERE " + 
-				"{    " + 
-				"    ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Film> . " + 
-				"    ?o <http://www.w3.org/2000/01/rdf-schema#label> ?title . " + 
-				"    FILTER (LANG(?title) =  'en') . " + 
-				"    FILTER(REGEX(?title,?x)) . " + 
-				" }");
+				"SELECT ?o " + 
+				"WHERE  " + 
+				"{ " + 
+				"     ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Film> . " + 
+				"     ?o <http://www.w3.org/2000/01/rdf-schema#label> ?title . " + 
+				"     ?o <http://dbpedia.org/ontology/Work/runtime> ?runtime . " + 
+				"     FILTER (LANG(?title) =  'en' && REGEX(?title,?x) && <http://www.w3.org/2001/XMLSchema#integer>(?runtime) = ?y) . " + 
+				"} " + 
+				"");
 		queryString.setLiteral("x", label);
-		//Query query = QueryFactory.create(queryString.);
+		queryString.setLiteral("y", runtime);
 		System.out.println(queryString);
 		
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBPEDIA_EP, queryString.asQuery());
@@ -116,7 +122,22 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 	private void enhanceWithDBpedia(Resource resource, Resource remote)
 	{
 		ParameterizedSparqlString queryString = new ParameterizedSparqlString(
-				"SELECT ?p ?s WHERE { ?x ?p ?s }");
+				"SELECT ?s ?p ?o " + 
+				"WHERE " + 
+				"{ " + 
+				"  {  " + 
+				"    ?s ?p ?o . " + 
+				"    FILTER (?s = ?x) " + 
+				"  } " + 
+				"  UNION " + 
+				"  { " + 
+				"     ?s ?p ?o . " + 
+				"     ?x ?props ?s . " + 
+				"     FILTER (?props = <http://dbpedia.org/ontology/director> || " + 
+				"             ?props = <http://dbpedia.org/ontology/starring> || " + 
+				"             ?props = <http://dbpedia.org/ontology/writer>) . " + 
+				"  } " + 
+				"}");
 		queryString.setParam("x", remote);
 		System.out.println(queryString);
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(DBPEDIA_EP, queryString.asQuery());
@@ -126,9 +147,10 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 			while (results.hasNext())
 			{
 				QuerySolution qs = results.next();
+				Resource subject = qs.getResource("?s"); 
 				Resource property = qs.getResource("?p");
-				RDFNode subject = qs.get("?s");
-				resource.addProperty(ontology.createProperty(property.getURI()), subject);
+				RDFNode object = qs.get("?o");
+				model.add(subject, ontology.createProperty(property.getURI()), object);
 			}
 		}
 		finally
@@ -164,36 +186,40 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 		Movie movie = movieFromResource(resource);
 		if (movie.getDbpUri() == null)
 		{
-			linkDBpedia(resource, movie.getTitle());
+			linkDBpedia(resource, movie.getTitle(), movie.getRuntime());
 			movie.setDbpUri(getUriString(resource, OWL.sameAs));
 		}
-		movie.setAbstract2(getString(resource, ontology.createProperty(DBPEDIA.ABSTRACT), lang));
-		movie.setTitle(getString(resource, RDFS.label, lang));
-		movie.setDirectors(getDirectorsForMovie(resource));
+		Resource remote = model.createResource(movie.getDbpUri());
+		movie.setAbstract2(getString(remote, ontology.createProperty(DBPEDIA.ABSTRACT), lang));
+		movie.setTitle(getString(remote, RDFS.label, lang));
+		movie.setDirectors(getPersonsForMovie(remote, ontology.createProperty("http://dbpedia.org/ontology/director"), lang));
+		movie.setActors2(getPersonsForMovie(remote, ontology.createProperty("http://dbpedia.org/ontology/starring"), lang));
+		movie.setWriters(getPersonsForMovie(remote, ontology.createProperty("http://dbpedia.org/ontology/writer"), lang));
 		return movie;
 	}
 	
-	public List<Director> getDirectorsForMovie(Resource movie)
+	public List<Person> getPersonsForMovie(Resource movie, Property property, String lang)
 	{
-		List<Director> directors = new ArrayList<>();
-		NodeIterator iter = model.listObjectsOfProperty(movie, ontology.createProperty("http://dbpedia.org/ontology/director"));
+		List<Person> directors = new ArrayList<>();
+		NodeIterator iter = model.listObjectsOfProperty(movie, property);
 		while (iter.hasNext())
 		{
 			RDFNode director = iter.next();
-			directors.add(directorFromResource(director.asResource()));
-			//TODO:
-			// TODO Download director properties into local RDF
-				// Display in UI
+			directors.add(personFromResource(director.asResource(), lang));
 		}
 		return directors;
 	}
 	
-	public Director directorFromResource(Resource resource)
+	public Person personFromResource(Resource resource, String lang)
 	{
-		Director director = new Director();
-		director.setDbpUri(resource.getURI());
-		director.setName(getString(resource, RDFS.label));
-		return director;
+		Person person = new Person();
+		person.setDbpUri(resource.getURI());
+		person.setName(getString(resource, RDFS.label, lang));
+		person.setWikiUri(getUriString(resource, FOAF.primaryTopic));
+		person.setThumbNail(getUriString(resource, ontology.createProperty("http://dbpedia.org/ontology/thumbnail")));
+		person.setAbstract2(getString(resource, ontology.createProperty(DBPEDIA.ABSTRACT), lang));
+		person.setDateOfBirth(getDate(resource, ontology.createProperty("http://dbpedia.org/ontology/birthDate")));
+		return person;
 	}
 
 	public Movie movieFromResource(Resource resource)
@@ -210,6 +236,9 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 		movie.setImdbRating(getDouble(resource, imdbRating));
 		movie.setReleased(getLong(resource, released));
 		movie.setRuntime(getInt(resource, runtime));
+		movie.setDirector(getString(resource, director));
+		movie.setWriter(getString(resource, writer));
+		movie.setActors(getString(resource, actors));
 		movie.setDbpUri(getUriString(resource, OWL.sameAs));
 		return movie;
 	}

@@ -1,0 +1,24 @@
+<div ng-if="items.length > 0" class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default" ng-repeat="person in items track by $index">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{collid}}{{$index}}" aria-expanded="false" aria-controls="collapseOne">
+          {{person.name}}
+        </a>
+      </h4>
+    </div>
+    <div id="collapse{{collid}}{{$index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+      	<div class="row">
+      		<div class="col-xs-12 col-md-4">
+        		<img class="img-responsive img-rounded" ng-src="{{person.thumbNail}}">
+        	</div>
+      		<div class="col-xs-12 col-md-8">
+      			<p><b>Date of birth: </b>{{person.dateOfBirth | date}}</p>
+        		<p>{{person.abstract2}}</p>
+        	</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
