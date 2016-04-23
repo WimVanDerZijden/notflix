@@ -1,51 +1,154 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<rdf:RDF
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-	xmlns:owl="http://www.w3.org/2002/07/owl#"
-	xmlns:wdrs="http://www.w3.org/2007/05/powder-s#"
-	xmlns:ns4="http://www.w3.org/ns/prov#"
-	xmlns:ns5="http://open.vocab.org/terms/"
-	xmlns     ="http://www.notflix.vanderzijden.nl/ontology#" >
-	
-	<owl:Ontology rdf:about="">
-	  <rdfs:comment>Metadata for Notflix</rdfs:comment>
-	</owl:Ontology>
-	
-<owl:Class rdf:ID="Movie">
-  <rdfs:comment>
-    A movie in the Notflix movie database
-  </rdfs:comment>
-  <owl:equivalentClass rdf:resource="http://dbpedia.org/ontology/Film"/>
-  <owl:subClassOf>
-    <owl:Restriction>
-      <owl:onProperty rdf:resource="#title"/>
-      <owl:allValuesFrom rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-    </owl:Restriction>
-  </owl:subClassOf>
-  <owl:subClassOf>
-    <owl:Restriction>
-      <owl:onProperty rdf:resource="#title"/>
-      <owl:minCardinality>1</owl:minCardinality>
-    </owl:Restriction>
-  </owl:subClassOf>  
-  <owl:subClassOf>
-    <owl:Restriction>
-      <owl:onProperty rdf:resource="#imdbID"/>
-      <owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-    </owl:Restriction>
-  </owl:subClassOf>
-  <owl:subClassOf>
-    <owl:Restriction>
-      <owl:onProperty rdf:resource="#year"/>
-      <owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
-      <owl:cardinality>1</owl:cardinality>
-    </owl:Restriction>
-  </owl:subClassOf>
-</owl:Class>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:wdrs="http://www.w3.org/2007/05/powder-s#" xmlns:ns4="http://www.w3.org/ns/prov#"
+	xmlns:ns5="http://open.vocab.org/terms/" xmlns="http://www.notflix.vanderzijden.nl/ontology#">
 
-<owl:DatatypeProperty rdf:ID="imdbID"/>
-<owl:DatatypeProperty rdf:ID="title"/>
-<owl:DatatypeProperty rdf:ID="year"/>
+	<owl:Ontology rdf:about="">
+		<rdfs:comment>Metadata for Notflix</rdfs:comment>
+	</owl:Ontology>
+
+	<owl:Class rdf:ID="Movie">
+		<rdfs:comment>
+			A movie in the Notflix movie database
+		</rdfs:comment>
+		<owl:equivalentClass rdf:resource="http://dbpedia.org/ontology/Film" />
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#title" />
+				<owl:allValuesFrom rdf:resource="http://www.w3.org/2000/10/XMLSchema#string" />
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#title" />
+				<owl:minCardinality>1</owl:minCardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#imdbID" />
+				<owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string" />
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#year" />
+				<owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#directed" />
+				<owl:allValuesFrom rdf:resource="#Person" />
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#acted" />
+				<owl:allValuesFrom rdf:resource="#Person" />				
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#wrote" />
+				<owl:allValuesFrom rdf:resource="#Person" />				
+			</owl:Restriction>
+		</owl:subClassOf>						
+	</owl:Class>
+
+	<owl:Class rdf:ID="User">
+		<rdfs:comment>
+			A registered user of the notflix website
+		</rdfs:comment>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#username" />
+				<owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#password" />
+				<owl:hasValue rdf:resource="http://www.w3.org/2000/10/XMLSchema#string" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Rating">
+		<rdfs:comment>A rating of a movie by a user</rdfs:comment>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#hasUser" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#aboutMovie" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#rating" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+	</owl:Class>
+
+	<owl:Class rdf:ID="UserMovie">
+		<rdfs:comment>
+			A movie in the context of a user. Currently the only difference is
+			that is has the user rating.
+		</rdfs:comment>
+		<owl:subClassOf rdf:resource="#Movie" />
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#hasUser" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+		<owl:subClassOf>
+			<owl:Restriction>
+				<owl:onProperty rdf:resource="#rating" />
+				<owl:cardinality>1</owl:cardinality>
+			</owl:Restriction>
+		</owl:subClassOf>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Person">
+		<owl:equivalentClass rdf:resource="http://dbpedia.org/ontology/Person" />
+	</owl:Class>
+
+	<owl:ObjectProperty rdf:about="#hasUser">
+		<rdfs:domain rdf:resource="User" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:about="#aboutMovie">
+		<rdfs:domain rdf:resource="Movie" />
+	</owl:ObjectProperty>
+	<owl:DataProperty rdf:about="#rating" />
+
+	<owl:ObjectProperty rdf:ID="involved">
+		<rdfs:domain rdf:resource="Person" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:ID="directed">
+		<rdfs:subPropertyOf rdf:resource="#involved" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:ID="wrote">
+		<rdfs:subPropertyOf rdf:resource="#involved" />
+	</owl:ObjectProperty>
+	<owl:ObjectProperty rdf:ID="acted">
+		<rdfs:subPropertyOf rdf:resource="#involved" />
+	</owl:ObjectProperty>
+
+	<owl:DatatypeProperty rdf:ID="imdbID" />
+	<owl:DatatypeProperty rdf:ID="title" />
+	<owl:DatatypeProperty rdf:ID="year" />
+	<owl:DatatypeProperty rdf:ID="username" />
+	<owl:DatatypeProperty rdf:ID="password" />
 
 </rdf:RDF>

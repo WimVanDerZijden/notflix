@@ -11,7 +11,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.FileManager;
 
-public class RDFModel {
+public class RDFModel
+{
 
 	public static final String DBPEDIA_EP = "http://dbpedia.org/sparql";
 	public static final String ONTOLOGY_NS = "http://www.notflix.vanderzijden.nl/ontology#";
@@ -33,8 +34,12 @@ public class RDFModel {
 	protected final Property director;
 	protected final Property actors;
 
-	public RDFModel(String ontologyLocation, String modelLocation) {
-		ontology = FileManager.get().loadModel(ontologyLocation, ONTOLOGY_NS, null);
+	public RDFModel(String ontologyLocation, String modelLocation)
+	{
+		if (ontologyLocation == null)
+			ontology = ModelFactory.createDefaultModel();
+		else
+			ontology = FileManager.get().loadModel(ontologyLocation, ONTOLOGY_NS, null);
 		if (modelLocation == null)
 			model = ModelFactory.createDefaultModel();
 		else
@@ -53,54 +58,58 @@ public class RDFModel {
 		actors = ontology.createProperty(ONTOLOGY_NS, "actors");
 	}
 
-	public RDFModel(String ontologyLocation) {
+	public RDFModel(String ontologyLocation)
+	{
 		this(ontologyLocation, null);
 	}
 
-	public String getString(Resource resource, Property property) {
+	public String getString(Resource resource, Property property)
+	{
 		Statement st = model.getProperty(resource, property);
 		if (st == null)
 			return null;
 		return st.getLiteral().getLexicalForm();
 	}
 
-	public String getString(Resource resource, Property property, String lang) {
-		NodeIterator iter = model.listObjectsOfProperty(resource, property);
-		String fallback = null;
-		while (iter.hasNext()) {
-			RDFNode node = iter.next();
-			if (node.asLiteral().getLanguage().equals(lang))
-				return node.asLiteral().getLexicalForm();
-			if (node.asLiteral().getLanguage().equals("en"))
-				fallback = node.asLiteral().getLexicalForm();
-		}
-		return fallback;
+public String getString(Resource resource, Property property, String lang)
+{
+	NodeIterator iter = model.listObjectsOfProperty(resource, property);
+	String fallback = null;
+	while (iter.hasNext())
+	{
+		RDFNode node = iter.next();
+		if (node.asLiteral().getLanguage().equals(lang))
+			return node.asLiteral().getLexicalForm();
+		if (node.asLiteral().getLanguage().equals("en"))
+			fallback = node.asLiteral().getLexicalForm();
 	}
-	
+	return fallback;
+}
+
 	public int getInt(Resource resource, Property property)
 	{
 		try
 		{
-		return Integer.parseInt(getString(resource, property));
+			return Integer.parseInt(getString(resource, property));
 		}
 		catch (NumberFormatException e)
 		{
 			return 0;
 		}
 	}
-	
+
 	public long getLong(Resource resource, Property property)
 	{
 		try
 		{
-		return Long.parseLong(getString(resource, property));
+			return Long.parseLong(getString(resource, property));
 		}
 		catch (NumberFormatException e)
 		{
 			return 0L;
 		}
 	}
-	
+
 	public long getDate(Resource resource, Property property)
 	{
 		try
@@ -112,20 +121,21 @@ public class RDFModel {
 			return 0L;
 		}
 	}
-	
+
 	public double getDouble(Resource resource, Property property)
 	{
 		try
 		{
-		return Double.parseDouble(getString(resource, property));
+			return Double.parseDouble(getString(resource, property));
 		}
 		catch (NumberFormatException e)
 		{
 			return 0D;
 		}
 	}
-	
-	public String getUriString(Resource resource, Property property) {
+
+	public String getUriString(Resource resource, Property property)
+	{
 		Statement st = model.getProperty(resource, property);
 		if (st == null)
 			return null;

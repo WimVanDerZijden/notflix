@@ -82,7 +82,7 @@ public class AppContextListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent event) {
 		ServletContext ctx = event.getServletContext();
 		NotflixModel model = (NotflixModel) ctx.getAttribute("model");
-		model.save(getModelPath(ctx));
+		model.save(getModelPath(ctx),null);
 	}
 	
 	private String getModelPath(ServletContext ctx)

@@ -14,7 +14,7 @@
         		<img class="img-responsive img-rounded" ng-src="{{person.thumbNail}}">
         	</div>
       		<div class="col-xs-12 col-md-8">
-      			<p><b>Date of birth: </b>{{person.dateOfBirth | date}}</p>
+      			<p ng-if="person.dateOfBirth"><b>Date of birth: </b>{{person.dateOfBirth | date}}</p>
         		<p>{{person.abstract2}}</p>
         	</div>
         </div>

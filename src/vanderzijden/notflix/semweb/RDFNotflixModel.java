@@ -49,13 +49,21 @@ public class RDFNotflixModel extends RDFModel implements NotflixModel
 		super(ontologyLocation);
 	}
 
-	public void save(String filename)
+	public void save(String filename, String ontologyFile)
 	{
+		//CreateNotflixRDF.printStatements(ontology, null, null, null);
 		try
 		{
-			FileOutputStream fo = new FileOutputStream(new File(filename));
+			File file = new File(filename);
+			FileOutputStream fo = new FileOutputStream(file);
 			model.write(fo);
 			fo.close();
+			System.out.println("Model saved to " + file.getAbsolutePath());
+			file = new File(ontologyFile);
+			fo = new FileOutputStream(file);
+			ontology.write(fo);
+			fo.close();
+			System.out.println("Ontology saved to " + file.getAbsolutePath());
 		}
 		catch (IOException e)
 		{

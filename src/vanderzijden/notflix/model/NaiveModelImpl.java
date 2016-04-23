@@ -25,7 +25,7 @@ public class NaiveModelImpl implements NotflixModel {
 	private static final SecureRandom random = new SecureRandom();
 
 	@Override
-	public void save(String filename)
+	public void save(String filename, String ontologyFile)
 	{
 		clearSessions();
 		Gson gson = new Gson();

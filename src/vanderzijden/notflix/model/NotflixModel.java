@@ -29,5 +29,5 @@ public interface NotflixModel
 	
 	void clearSessions();
 	
-	void save(String filename);
+	void save(String filename, String ontologyFile);
 }

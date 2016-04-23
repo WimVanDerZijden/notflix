@@ -41,6 +41,8 @@ public class SemwebAppContextListener implements ServletContextListener {
 	private static final String MODEL_SAVE_FILE = "model_save_file.xml";
 
 	private static final String MODEL_ONTOLOGY = "notflix_ontology.xml";
+	
+	private static final String MODEL_ONTOLOGY_SAVE_FILE = "notflix_ontology_save_file.xml";
 	/**
 	 * Requested 729,513 movies via omdb-api. Added: 88,951 Not found: 142,183
 	 * (main cause: foreign title movies that are in OMDB-API under English
@@ -70,8 +72,7 @@ public class SemwebAppContextListener implements ServletContextListener {
 			if (scanner != null)
 				scanner.close();
 		}
-		// Failed to load model: create new model // TODO load RDFNotflixModel
-		// instead
+		// Failed to load model: create new model instead
 		if (model == null || RELOAD_MODEL) {
 			model = new RDFNotflixModel(getOntologyPath(ctx));
 			loadTestData(model);
@@ -84,7 +85,7 @@ public class SemwebAppContextListener implements ServletContextListener {
 		ServletContext ctx = event.getServletContext();
 		NotflixModel model = (NotflixModel) ctx.getAttribute("model");
 		if (model != null)
-			model.save(getModelPath(ctx));
+			model.save(getModelPath(ctx), getOntologySavePath(ctx));
 	}
 
 	private String getModelPath(ServletContext ctx) {
@@ -98,6 +99,12 @@ public class SemwebAppContextListener implements ServletContextListener {
 	private static String getOntologyPath(ServletContext ctx) {
 		return ctx.getRealPath("/WEB-INF") + "/" + MODEL_ONTOLOGY;
 	}
+
+	private static String getOntologySavePath(ServletContext ctx) {
+		return ctx.getRealPath("/WEB-INF") + "/" + MODEL_ONTOLOGY_SAVE_FILE;
+	}
+
+	
 
 	private void loadTestData(final NotflixModel model) {
 		Scanner scanner = null;
@@ -114,7 +121,7 @@ public class SemwebAppContextListener implements ServletContextListener {
 				JSONObject jsonMovie = jsonMovies.getJSONObject(n);
 				model.addMovie(Movie.parseFromOmdbApi(jsonMovie));
 			}
-			model.save(getModelPath(ctx));
+			model.save(getModelPath(ctx), getOntologyPath(ctx));
 		} catch (FileNotFoundException e) {
 			Log.severe(SemwebAppContextListener.class, "File not found: "
 					+ getMoviesPath(ctx));
